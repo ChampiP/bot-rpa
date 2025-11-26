@@ -1,95 +1,134 @@
-# 🤖 BOT RPA - DESCARGA AUTOMATICA DE DIAGRAMAS CLARO
+🤖 BOT RPA - DESCARGA AUTOMÁTICA DE DIAGRAMAS CLARO
 
-## 📋 ¿Qué hace este bot?
+📋 Descripción
 
-Este bot descarga **automáticamente** todos los diagramas y documentos del portal de Claro que necesites. Tú solo configuras qué buscar y él hace todo el trabajo.
+Este bot automatiza la descarga de diagramas y documentos del portal de Claro. El sistema permite configurar los términos de búsqueda y gestiona el proceso de obtención de archivos de manera autónoma.
 
-**🔗 Repositorio:** https://github.com/ChampiP/bot-rpa
+🔗 Repositorio: https://github.com/ChampiP/bot-rpa
 
----
+🚀 GUÍA DE INICIO RÁPIDO
 
-## 🚀 INICIO RAPIDO (3 Pasos)
+📥 DESCARGA E INSTALACIÓN
 
-### 📥 DESCARGAR E INSTALAR
+Opción 1: Instalación Automática desde GitHub (Recomendado)
+Ejecutar el siguiente comando en PowerShell (con permisos de Administrador):
 
-**Opción 1: Instalación Automática desde GitHub (Recomendado)**
-```bash
-# En PowerShell (Administrador)
-irm https://raw.githubusercontent.com/ChampiP/bot-rpa/main/INSTALAR_DESDE_GITHUB.bat -outfile install.bat; .\install.bat
-```
+irm [https://raw.githubusercontent.com/ChampiP/bot-rpa/main/INSTALAR_DESDE_GITHUB.bat](https://raw.githubusercontent.com/ChampiP/bot-rpa/main/INSTALAR_DESDE_GITHUB.bat) -outfile install.bat; .\install.bat
 
-**Opción 2: Descarga Manual**
-```
-1. Ve a: https://github.com/ChampiP/bot-rpa
-2. Click en "Code" → "Download ZIP"
-3. Extrae los archivos
-4. Haz doble clic en: INSTALAR.bat
-5. Espera 2-3 minutos
-6. ¡Listo!
-```
 
-### 1️⃣ INSTALAR (Solo la primera vez)
-```
-Haz doble clic en: INSTALAR.bat
-Espera 2-3 minutos
-¡Listo!
-```
+Opción 2: Descarga Manual
 
-### 2️⃣ CONFIGURAR
-```
-Haz doble clic en: EJECUTAR_BOT.bat
+Ir a: https://github.com/ChampiP/bot-rpa
+
+Hacer clic en "Code" → "Download ZIP".
+
+Extraer los archivos en una carpeta local.
+
+Ejecutar el archivo: INSTALAR.bat.
+
+Esperar la finalización del proceso (aprox. 2-3 minutos).
+
+1️⃣ INSTALACIÓN DE DEPENDENCIAS
+
+Para la configuración inicial del entorno:
+
+Ejecutar el archivo INSTALAR.bat.
+
+Esperar a que la consola indique que el proceso ha finalizado.
+
+2️⃣ CONFIGURACIÓN
+
+Ejecutar el archivo EJECUTAR_BOT.bat.
+
+Opción 1: Interfaz Gráfica.
+
+Ir a la pestaña "Ajustes".
+
+Ingresar las credenciales de acceso al portal (Usuario y Contraseña).
+
+Seleccionar "Guardar".
+
+3️⃣ EJECUCIÓN
+
+Ir a la pestaña "Ejecutar".
+
+Hacer clic en "🚀 INICIAR DESCARGA AUTOMÁTICA".
+
+El bot iniciará el navegador y procesará las descargas automáticamente.
+
+📁 Ubicación de Descargas
+
+Los archivos descargados se almacenarán automáticamente en la ruta predeterminada del sistema:
+
+C:\Users\%USERNAME%\Downloads
+
+
+⚙️ ESTRUCTURA DE ARCHIVOS
+
+Archivo
+
+Descripción
+
+Acción Requerida
+
+INSTALAR.bat
+
+Script de instalación automática de entorno y dependencias
+
+✅ Ejecutar una vez al inicio
+
+EJECUTAR_BOT.bat
+
+Lanzador principal del bot
+
+✅ Usar para iniciar la aplicación
+
+LEEME.txt
+
+Documentación técnica detallada
+
+📖 Referencia
+
+CREAR_PAQUETE_PORTABLE.bat
+
+Generador de versión portable para distribución
+
+✅ Ejecutar solo para redistribución
+
+index.py
+
+Lógica principal del bot (Python)
+
+❌ No modificar
+
+gui.py
+
+Código de interfaz gráfica (Python)
+
+❌ No modificar
+
+🎯 PERSONALIZACIÓN DE BÚSQUEDAS
+
 Opción 1: Interfaz Gráfica
-Ve a pestaña "Ajustes"
-Ingresa tu usuario y contraseña
-Dale "Guardar"
-```
 
-### 3️⃣ USAR
-```
-Pestaña "Ejecutar"
-Click en "🚀 INICIAR DESCARGA AUTOMATICA"
-¡Relájate! El bot hace todo solo
-```
+Abrir EJECUTAR_BOT.bat.
 
----
+Ir a la pestaña "Términos".
 
-## 📁 ¿Dónde están mis archivos?
+Agregar o eliminar los términos deseados en la lista.
 
-Los archivos descargados están en:
-```
-C:\Users\TU_USUARIO\Downloads
-```
+Guardar los cambios.
 
----
+Opción 2: Edición Manual
 
-## ⚙️ ARCHIVOS IMPORTANTES
+Acceder a la carpeta config.
 
-| Archivo | Para qué sirve | ¿Debes tocarlo? |
-|---------|----------------|----------------|
-| `INSTALAR.bat` | Instala todo automáticamente | ✅ Solo ejecutar |
-| `EJECUTAR_BOT.bat` | Inicia el bot | ✅ Usar siempre |
-| `LEEME.txt` | Instrucciones completas | 📖 Leer si hay dudas |
-| `CREAR_PAQUETE_PORTABLE.bat` | Crea copia para compartir | ✅ Solo si quieres compartir |
-| `index.py` | Código del bot | ❌ No modificar |
-| `gui.py` | Interfaz gráfica | ❌ No modificar |
+Editar el archivo terms.json con un editor de texto (Notepad, VS Code).
 
----
+Modificar la lista siguiendo el formato JSON estándar.
 
-## 🎯 ¿Cómo personalizo qué descargar?
+Ejemplo de estructura terms.json:
 
-### Opción 1: Interfaz Gráfica (Fácil)
-1. Abre `EJECUTAR_BOT.bat`
-2. Ve a pestaña "Términos"
-3. Agrega o quita términos
-4. Guarda
-
-### Opción 2: Editar directamente
-1. Abre la carpeta `config`
-2. Edita `terms.json` con Notepad
-3. Agrega términos entre comillas separados por comas
-
-Ejemplo:
-```json
 {
   "lista_busqueda": [
     "Migracion de plan",
@@ -97,118 +136,119 @@ Ejemplo:
     "Bloqueo de linea"
   ]
 }
-```
 
----
 
-## 🆘 PROBLEMAS COMUNES
+🆘 SOLUCIÓN DE PROBLEMAS FRECUENTES
 
-### ❌ "Python no encontrado"
-**Solución:** El instalador lo descargará automáticamente. Si falla:
-1. Ve a: https://www.python.org/downloads/
-2. Descarga Python 3.11
-3. Durante instalación marca "Add Python to PATH"
-4. Ejecuta `INSTALAR.bat` de nuevo
+❌ "Python no encontrado"
 
-### ❌ "Error al instalar dependencias"
-**Solución:**
-1. Cierra todo
-2. Ejecuta `INSTALAR.bat` de nuevo
-3. Si persiste, reinicia tu PC
+Causa: Python no está instalado en el sistema o no se agregó a las variables de entorno (PATH).
+Solución:
 
-### ❌ "No se pudo acceder al portal"
-**Solución:**
-1. Verifica tu internet
-2. Verifica usuario y contraseña en "Ajustes"
-3. Intenta acceder manualmente al portal primero
+Ir a: https://www.python.org/downloads/
 
-### ❌ El bot se queda pausado
-**Solución:** Esto ya está arreglado en esta versión. El bot ya no requiere presionar Enter.
+Descargar la versión Python 3.11 o superior.
 
----
+Durante la instalación, marcar obligatoriamente la casilla "Add Python to PATH".
 
-## 📦 ¿Cómo comparto esto con mis compañeros?
+Ejecutar INSTALAR.bat nuevamente.
 
-### Método 1: Compartir Link de GitHub (Más Fácil) ⭐
-Simplemente comparte: **https://github.com/ChampiP/bot-rpa**
+❌ "Error al instalar dependencias"
 
-Tus compañeros:
-1. Abren el link
-2. Click en "Code" → "Download ZIP"
-3. Extraen y ejecutan `INSTALAR.bat`
-4. ¡Listo!
+Solución:
 
-### Método 2: Comando de Instalación Directa
-Tu compañero ejecuta en PowerShell (Administrador):
-```powershell
-irm https://raw.githubusercontent.com/ChampiP/bot-rpa/main/INSTALAR_DESDE_GITHUB.bat -outfile install.bat; .\install.bat
-```
+Cerrar todas las ventanas de consola o procesos relacionados.
 
-### Método 3: Crear Paquete Local
-1. Ejecuta `CREAR_PAQUETE_PORTABLE.bat`
-2. Se creará carpeta `BOT_RPA_CLARO_PORTABLE`
-3. Comparte esa carpeta (Drive, OneDrive, USB, etc.)
-4. Tu compañero ejecuta `INSTALAR.bat`
+Ejecutar INSTALAR.bat nuevamente.
 
-⚠️ **IMPORTANTE:** La carpeta `.venv` NO se debe compartir. El instalador la crea automáticamente.
+Si el error persiste, reiniciar el equipo e intentar de nuevo.
 
----
+❌ "No se pudo acceder al portal"
 
-## 🔒 ¿Es seguro?
+Solución:
 
-✅ Sí. Este bot:
-- Solo accede al portal de Claro
-- No envía información a ningún otro lado
-- Las contraseñas se guardan solo en tu computadora
-- Es código abierto (puedes revisarlo)
+Verificar la conexión a internet.
 
----
+Validar que las credenciales ingresadas en la pestaña "Ajustes" sean correctas.
 
-## 💡 CONSEJOS PRO
+Intentar acceder manualmente al portal mediante el navegador para descartar caídas del servicio.
 
-1. **Antes de ejecutar:** Cierra Chrome completamente
-2. **Durante ejecución:** No cierres el navegador que abre el bot
-3. **Si algo falla:** El bot intentará recuperarse solo
-4. **Archivos grandes:** Algunos diagramas pesan varios MB, ten paciencia
-5. **Múltiples búsquedas:** El bot procesa un término a la vez
+❌ El bot se detiene
 
----
+Nota: En la versión actual (2.3+), el bot gestiona las esperas automáticamente y no requiere interacción manual (presionar Enter) durante la ejecución normal.
 
-## 📊 Características Técnicas
+📦 DESPLIEGUE Y DISTRIBUCIÓN
 
-- ✅ Interfaz gráfica amigable
-- ✅ Instalación automática de dependencias
-- ✅ Desbloqueo automático de archivos Excel
-- ✅ Sistema de scoring inteligente para mejor precisión
-- ✅ Recuperación automática de errores
-- ✅ Logs claros y concisos
-- ✅ 100% portable
+Método 1: Clonación desde GitHub
 
----
+Compartir el enlace del repositorio público: https://github.com/ChampiP/bot-rpa
+Los usuarios deberán descargar el ZIP y ejecutar INSTALAR.bat.
 
-## 📞 ¿Necesitas ayuda?
+Método 2: Instalación vía Comandos (PowerShell)
 
-Si tienes problemas:
+Ejecutar el siguiente script en PowerShell con permisos de administrador:
 
-1. Lee `LEEME.txt` completo
-2. Verifica PROBLEMAS COMUNES arriba
-3. Ejecuta `INSTALAR.bat` de nuevo
-4. Reinicia tu computadora
-5. Contacta al administrador del sistema
+irm [https://raw.githubusercontent.com/ChampiP/bot-rpa/main/INSTALAR_DESDE_GITHUB.bat](https://raw.githubusercontent.com/ChampiP/bot-rpa/main/INSTALAR_DESDE_GITHUB.bat) -outfile install.bat; .\install.bat
 
----
 
-## 📝 Versión
+Método 3: Generación de Paquete Portable (Offline)
 
-**Versión:** 2.3  
-**Fecha:** Noviembre 2025  
-**Mejoras en esta versión:**
-- ✨ Salida más limpia y amigable
-- ⚡ Más rápido (reducción de 40% en tiempos de espera)
-- 🔧 Sin pausas que requieran presionar Enter
-- 📦 Sistema portable mejorado
-- 🎨 Interfaz gráfica más intuitiva
+Ejecutar el script CREAR_PAQUETE_PORTABLE.bat.
 
----
+Se generará una carpeta llamada BOT_RPA_CLARO_PORTABLE.
 
-**¡Disfruta tu bot! 🎉**
+Distribuir dicha carpeta a los usuarios finales (vía USB, Red, Drive).
+
+El usuario final solo deberá ejecutar INSTALAR.bat dentro de la carpeta recibida.
+
+⚠️ IMPORTANTE: Al distribuir manualmente, NO incluir la carpeta .venv. El script de instalación generará el entorno virtual específico para el equipo de destino automáticamente.
+
+🔒 SEGURIDAD Y PRIVACIDAD
+
+Acceso: El bot interactúa exclusivamente con el portal de Claro especificado.
+
+Datos: No se realiza envío de telemetría, logs ni datos a servidores externos.
+
+Credenciales: Las contraseñas se almacenan localmente en el equipo del usuario.
+
+Código Abierto: El proyecto es transparente y puede ser auditado.
+
+💡 RECOMENDACIONES DE USO
+
+Antes de ejecutar: Se recomienda cerrar instancias previas de Google Chrome para evitar conflictos con los drivers de Selenium.
+
+Durante ejecución: Mantener abierta la ventana del navegador que inicia el bot (no minimizar si es posible).
+
+Manejo de errores: El bot cuenta con sistemas de recuperación automática ante fallos de carga.
+
+Archivos pesados: La descarga de diagramas extensos puede tomar tiempo adicional; el bot esperará a que finalicen.
+
+Procesamiento: Las búsquedas se realizan de manera secuencial para asegurar la integridad de los datos.
+
+📊 CARACTERÍSTICAS TÉCNICAS
+
+✅ Interfaz gráfica de usuario (GUI) basada en Tkinter/CustomTkinter.
+
+✅ Gestión automática de dependencias y entorno virtual (venv).
+
+✅ Desbloqueo automático de archivos Excel protegidos mediante librería pywin32.
+
+✅ Algoritmo de scoring para determinar la relevancia de resultados de búsqueda.
+
+✅ Sistema de logs detallados para depuración y seguimiento.
+
+✅ Estructura portable y modular.
+
+📞 SOPORTE
+
+En caso de incidencias técnicas:
+
+Consultar el archivo LEEME.txt incluido en el paquete.
+
+Revisar la sección de Solución de Problemas de este documento.
+
+Reintentar la instalación de dependencias ejecutando INSTALAR.bat.
+
+Versión: 2.3
+
+Fecha: Noviembre 2025
