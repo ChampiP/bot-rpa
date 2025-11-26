@@ -1,0 +1,49 @@
+================================================================================
+    BOT RPA - DESCARGA AUTOMATICA DE DIAGRAMAS CLARO
+================================================================================
+
+INSTRUCCIONES DE USO (SUPER FACIL):
+
+1. PRIMERA VEZ - INSTALAR:
+   - Haz doble clic en "INSTALAR.bat"
+   - Espera a que termine (instala todo automaticamente)
+   - Listo! Ya esta configurado
+
+2. CADA VEZ QUE USES EL BOT:
+   - Haz doble clic en "EJECUTAR_BOT.bat"
+   - Selecciona opcion 1 (Interfaz Grafica)
+   - Configura tu usuario y contraseña
+   - Dale clic a "Ejecutar Bot"
+   - El bot hara todo solo!
+
+================================================================================
+IMPORTANTE:
+================================================================================
+
+- Los archivos se descargan en tu carpeta "Descargas"
+- El bot necesita internet para funcionar
+- No cierres el navegador mientras trabaja
+- Si algo falla, ejecuta "INSTALAR.bat" nuevamente
+
+================================================================================
+SOPORTE:
+================================================================================
+
+Si tienes problemas:
+1. Verifica que tienes internet
+2. Ejecuta "INSTALAR.bat" de nuevo
+3. Reinicia tu computadora
+4. Contacta al administrador del sistema
+
+================================================================================
+ARCHIVOS DEL PAQUETE:
+================================================================================
+
+INSTALAR.bat         -> Ejecuta esto la primera vez
+EJECUTAR_BOT.bat     -> Usa esto cada vez que quieras usar el bot
+LEEME.txt            -> Este archivo
+index.py             -> Codigo principal (no tocar)
+gui.py               -> Interfaz grafica (no tocar)
+requirements.txt     -> Lista de dependencias (no tocar)
+
+================================================================================

@@ -1,0 +1,7 @@
+# ===================================
+# DEPENDENCIAS DEL PROYECTO
+# ===================================
+# Instalación: pip install -r requirements.txt
+
+selenium==4.15.2
+python-dotenv==1.0.0
