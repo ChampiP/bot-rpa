@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # 🤖 BOT RPA – DESCARGA AUTOMÁTICA DE DIAGRAMAS CLARO
 
 ## 📋 Descripción General
@@ -5,6 +6,16 @@
 Este bot permite descargar de forma automática los diagramas y documentos disponibles en el portal de Claro.  
 Solo es necesario definir los términos de búsqueda y el sistema realizará el proceso completo.
 
+=======
+
+# 🤖 BOT RPA – DESCARGA AUTOMÁTICA DE DIAGRAMAS CLARO
+
+## 📋 Descripción General
+
+Este bot permite descargar de forma automática los diagramas y documentos disponibles en el portal de Claro.  
+Solo es necesario definir los términos de búsqueda y el sistema realizará el proceso completo.
+
+>>>>>>> e210ad0a0657b163fb445ab9887675e5a2c3e8e6
 **Repositorio:** https://github.com/ChampiP/bot-rpa
 
 ---
@@ -14,12 +25,37 @@ Solo es necesario definir los términos de búsqueda y el sistema realizará el 
 ### 📥 Instalación
 
 **Opción 1: Instalación automática desde GitHub (Recomendada)**  
+<<<<<<< HEAD
 Ejecutar en PowerShell (NO necesita ser Administrador):
+=======
+Ejecutar en PowerShell con permisos de administrador:
+>>>>>>> e210ad0a0657b163fb445ab9887675e5a2c3e8e6
 
 ```bash
 irm https://raw.githubusercontent.com/ChampiP/bot-rpa/main/INSTALAR_DESDE_GITHUB.bat -outfile install.bat; .\install.bat
+````
+
+**Opción 2: Instalación manual**
+
+1. Acceder al repositorio: [https://github.com/ChampiP/bot-rpa](https://github.com/ChampiP/bot-rpa)
+2. Seleccionar “Code” → “Download ZIP”.
+3. Extraer los archivos.
+4. Ejecutar `INSTALAR.bat`.
+5. Esperar 2 a 3 minutos hasta completar.
+
+---
+
+## 🧩 Configuración
+
+### 1️⃣ Instalación inicial
+
+Ejecutar:
+
+```
+INSTALAR.bat
 ```
 
+<<<<<<< HEAD
 ✅ Se instala automáticamente en: `Desktop\Bot_RPA_Claro`  
 ✅ Los archivos .bat se copian al Escritorio para fácil acceso
 
@@ -37,10 +73,14 @@ irm https://raw.githubusercontent.com/ChampiP/bot-rpa/main/INSTALAR_DESDE_GITHUB
 ## 🧩 Configuración
 
 ### 1️⃣ Instalación inicial
+=======
+### 2️⃣ Configuración del bot
+>>>>>>> e210ad0a0657b163fb445ab9887675e5a2c3e8e6
 
 Ejecutar:
 
 ```
+<<<<<<< HEAD
 INSTALAR.bat
 ```
 
@@ -61,6 +101,20 @@ En la interfaz gráfica:
 ### 3️⃣ Ejecución
 
 En la pestaña "Ejecutar":
+=======
+EJECUTAR_BOT.bat
+```
+
+En la interfaz gráfica:
+
+* Abrir la pestaña “Ajustes”.
+* Registrar credenciales.
+* Guardar.
+
+### 3️⃣ Ejecución
+
+En la pestaña “Ejecutar”:
+>>>>>>> e210ad0a0657b163fb445ab9887675e5a2c3e8e6
 
 ```
 INICIAR DESCARGA AUTOMÁTICA 🚀
@@ -93,6 +147,7 @@ C:\Users\NOMBRE_USUARIO\Downloads
 
 ### Método 1: Interfaz gráfica
 
+<<<<<<< HEAD
 1. Abrir `EJECUTAR_BOT.bat`
 2. Ir a "Términos"
 3. Agregar o modificar términos
@@ -102,6 +157,17 @@ C:\Users\NOMBRE_USUARIO\Downloads
 
 1. Abrir la carpeta `config`
 2. Editar `terms.json`
+=======
+1. Abrir `EJECUTAR_BOT.bat`.
+2. Ir a “Términos”.
+3. Agregar o modificar términos.
+4. Guardar.
+
+### Método 2: Edición directa de archivo
+
+1. Abrir la carpeta `config`.
+2. Editar `terms.json`.
+>>>>>>> e210ad0a0657b163fb445ab9887675e5a2c3e8e6
 
 Ejemplo:
 
@@ -121,6 +187,7 @@ Ejemplo:
 
 ### ❌ Python no encontrado
 
+<<<<<<< HEAD
 1. El instalador intentará descargarlo automáticamente
 2. Si falla:
 
@@ -144,6 +211,31 @@ Ejemplo:
 
 * Esta versión ya corrige las pausas interactivas
 * Si ocurre, cerrar todo y volver a ejecutar
+=======
+1. El instalador intentará descargarlo automáticamente.
+2. Si falla:
+
+   * Descargar Python desde [https://www.python.org/downloads/](https://www.python.org/downloads/)
+   * Activar “Add Python to PATH”.
+   * Ejecutar nuevamente `INSTALAR.bat`.
+
+### ❌ Error instalando dependencias
+
+1. Cerrar todos los programas.
+2. Ejecutar otra vez `INSTALAR.bat`.
+3. Reiniciar el equipo si persiste.
+
+### ❌ No se puede acceder al portal
+
+* Revisar conexión a internet.
+* Verificar credenciales en la pestaña “Ajustes”.
+* Comprobar acceso manual al portal.
+
+### ❌ El bot se detiene
+
+* Esta versión ya corrige las pausas interactivas.
+* Si ocurre, cerrar todo y volver a ejecutar.
+>>>>>>> e210ad0a0657b163fb445ab9887675e5a2c3e8e6
 
 ---
 
@@ -163,10 +255,17 @@ irm https://raw.githubusercontent.com/ChampiP/bot-rpa/main/INSTALAR_DESDE_GITHUB
 
 ### Método 3: Paquete portable
 
+<<<<<<< HEAD
 1. Ejecutar `CREAR_PAQUETE_PORTABLE.bat`
 2. Se generará la carpeta `BOT_RPA_CLARO_PORTABLE`
 3. Compartir la carpeta
 4. Ejecutar `INSTALAR.bat`
+=======
+1. Ejecutar `CREAR_PAQUETE_PORTABLE.bat`.
+2. Se generará la carpeta `BOT_RPA_CLARO_PORTABLE`.
+3. Compartir la carpeta.
+4. Ejecutar `INSTALAR.bat`.
+>>>>>>> e210ad0a0657b163fb445ab9887675e5a2c3e8e6
 
 **Nota:** la carpeta `.venv` no debe compartirse.
 
@@ -174,25 +273,41 @@ irm https://raw.githubusercontent.com/ChampiP/bot-rpa/main/INSTALAR_DESDE_GITHUB
 
 ## 🔒 Seguridad
 
+<<<<<<< HEAD
 * El bot solo interactúa con el portal de Claro
 * No envía datos a servicios externos
 * Las credenciales se almacenan localmente
 * El código es completamente abierto
+=======
+* El bot solo interactúa con el portal de Claro.
+* No envía datos a servicios externos.
+* Las credenciales se almacenan localmente.
+* El código es completamente abierto.
+>>>>>>> e210ad0a0657b163fb445ab9887675e5a2c3e8e6
 
 ---
 
 ## 💡 Recomendaciones
 
+<<<<<<< HEAD
 * Cerrar completamente Chrome antes de ejecutar
 * No cerrar el navegador que abre el bot
 * El bot intentará recuperarse ante errores
 * Algunos diagramas pueden ser pesados
 * El procesamiento se realiza término por término
+=======
+* Cerrar completamente Chrome antes de ejecutar.
+* No cerrar el navegador que abre el bot.
+* El bot intentará recuperarse ante errores.
+* Algunos diagramas pueden ser pesados.
+* El procesamiento se realiza término por término.
+>>>>>>> e210ad0a0657b163fb445ab9887675e5a2c3e8e6
 
 ---
 
 ## 📊 Características
 
+<<<<<<< HEAD
 * Interfaz gráfica intuitiva
 * Instalación automática de dependencias
 * Desbloqueo automático de archivos Excel
@@ -200,6 +315,15 @@ irm https://raw.githubusercontent.com/ChampiP/bot-rpa/main/INSTALAR_DESDE_GITHUB
 * Manejo automático de errores
 * Registros claros
 * Totalmente portable
+=======
+* Interfaz gráfica intuitiva.
+* Instalación automática de dependencias.
+* Desbloqueo automático de archivos Excel.
+* Sistema de scoring para mayor precisión.
+* Manejo automático de errores.
+* Registros claros.
+* Totalmente portable.
+>>>>>>> e210ad0a0657b163fb445ab9887675e5a2c3e8e6
 
 ---
 
@@ -210,6 +334,7 @@ irm https://raw.githubusercontent.com/ChampiP/bot-rpa/main/INSTALAR_DESDE_GITHUB
 
 **Mejoras:**
 
+<<<<<<< HEAD
 * Salida más limpia y ordenada
 * Reducción del tiempo de espera (40%)
 * Eliminación de pausas interactivas
@@ -228,7 +353,22 @@ Para soporte adicional, revisar:
 - 🔧 Sin pausas que requieran presionar Enter
 - 📦 Sistema portable mejorado
 - 🎨 Interfaz gráfica más intuitiva
+=======
+* Salida más limpia y ordenada.
+* Reducción del tiempo de espera (40%).
+* Eliminación de pausas interactivas.
+* Mejor versión portable.
+* Interfaz gráfica más clara.
+>>>>>>> e210ad0a0657b163fb445ab9887675e5a2c3e8e6
 
 ---
 
-**¡Disfruta tu bot! 🎉**
+## 🎉 Gracias por usar este proyecto
+
+Para soporte adicional, revisar:
+
+* `LEEME.txt`
+* La sección de Problemas Comunes
+* Reinstalar si es necesario
+
+
