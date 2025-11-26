@@ -121,15 +121,29 @@ echo ------------------------------------------------------------
 :: Cambiar a la carpeta de instalacion
 cd /d "%INSTALL_DIR%"
 
-:: Clonar repositorio
-echo [*] Clonando repositorio en Desktop...
-git clone https://github.com/ChampiP/bot-rpa.git .
-
-if %errorlevel% neq 0 (
-    echo [X] Error descargando el bot
-    echo [!] Verifica la URL del repositorio
-    pause
-    exit /b 1
+:: Verificar si la carpeta tiene contenido
+if exist ".git" (
+    echo [*] Repositorio ya existe, actualizando...
+    git pull
+    if %errorlevel% neq 0 (
+        echo [!] Error actualizando, clonando de nuevo...
+        cd ..
+        rmdir /s /q "%INSTALL_DIR%" 2>nul
+        mkdir "%INSTALL_DIR%"
+        cd /d "%INSTALL_DIR%"
+        git clone https://github.com/ChampiP/bot-rpa.git .
+    )
+) else (
+    :: Clonar repositorio
+    echo [*] Clonando repositorio en Desktop...
+    git clone https://github.com/ChampiP/bot-rpa.git .
+    
+    if %errorlevel% neq 0 (
+        echo [X] Error descargando el bot
+        echo [!] Verifica la URL del repositorio: https://github.com/ChampiP/bot-rpa.git
+        pause
+        exit /b 1
+    )
 )
 
 echo [OK] Bot descargado correctamente
