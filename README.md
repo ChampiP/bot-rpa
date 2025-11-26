@@ -223,9 +223,4 @@ Para soporte adicional, revisar:
 * La sección de Problemas Comunes
 * Reinstalar si es necesario
 
-```
 
----
-
-Todo listo. Sólo copia ese bloque y pégalo como `README.md` en tu repositorio.
-```
