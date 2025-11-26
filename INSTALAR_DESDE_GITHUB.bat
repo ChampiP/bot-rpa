@@ -92,9 +92,9 @@ if not exist "bot_temp" (
 
 cd bot_temp
 
-:: Clonar repositorio (CAMBIA ESTA URL POR LA TUYA)
+:: Clonar repositorio
 echo [*] Clonando repositorio...
-git clone https://github.com/TU_USUARIO/bot-rpa-claro.git .
+git clone https://github.com/ChampiP/bot-rpa.git .
 
 if %errorlevel% neq 0 (
     echo [X] Error descargando el bot

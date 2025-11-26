@@ -34,7 +34,7 @@ Ellos:
 
 También puedes compartir el link directo:
 ```
-https://github.com/TU_USUARIO/bot-rpa-claro/archive/refs/heads/main.zip
+https://github.com/ChampiP/bot-rpa/archive/refs/heads/main.zip
 ```
 
 ## 📋 INSTRUCCIONES PARA COMPANEROS
@@ -44,14 +44,14 @@ https://github.com/TU_USUARIO/bot-rpa-claro/archive/refs/heads/main.zip
 1. Abrir PowerShell como Administrador
 2. Pegar este comando y presionar Enter:
 ```powershell
-irm https://raw.githubusercontent.com/TU_USUARIO/bot-rpa-claro/main/INSTALAR_DESDE_GITHUB.bat -outfile install.bat; .\install.bat
+irm https://raw.githubusercontent.com/ChampiP/bot-rpa/main/INSTALAR_DESDE_GITHUB.bat -outfile install.bat; .\install.bat
 ```
 3. Esperar 2-3 minutos
 4. ¡Listo!
 
 ### Método 2: Descarga Manual
 
-1. Ir a: https://github.com/TU_USUARIO/bot-rpa-claro
+1. Ir a: https://github.com/ChampiP/bot-rpa
 2. Click en botón verde "Code"
 3. Click en "Download ZIP"
 4. Extraer el archivo ZIP
@@ -90,7 +90,7 @@ Mensaje que puedes copiar y pegar:
 
 Instala el bot en 3 minutos:
 
-1️⃣ Descarga desde: https://github.com/TU_USUARIO/bot-rpa-claro
+1️⃣ Descarga desde: https://github.com/ChampiP/bot-rpa
 
 2️⃣ Click en "Code" → "Download ZIP"
 

@@ -41,7 +41,7 @@ echo.
 echo En la pagina de GitHub, copia la URL que aparece en:
 echo "Quick setup — if you've done this kind of thing before"
 echo.
-echo Ejemplo: https://github.com/TU_USUARIO/bot-rpa-claro.git
+echo Ejemplo: https://github.com/ChampiP/bot-rpa.git
 echo.
 set /p REPO_URL="Pega aqui la URL de tu repositorio: "
 
@@ -109,15 +109,15 @@ echo.
 echo PROXIMO PASO - COMPARTIR CON COMPANEROS:
 echo.
 echo 1. Comparte esta URL:
-echo    https://github.com/%GIT_USER%/bot-rpa-claro
+echo    https://github.com/ChampiP/bot-rpa
 echo.
 echo 2. Tus companeros pueden instalar con UN SOLO COMANDO:
 echo.
 echo    En PowerShell (Administrador):
-echo    irm https://raw.githubusercontent.com/%GIT_USER%/bot-rpa-claro/main/INSTALAR_DESDE_GITHUB.bat -outfile install.bat; .\install.bat
+echo    irm https://raw.githubusercontent.com/ChampiP/bot-rpa/main/INSTALAR_DESDE_GITHUB.bat -outfile install.bat; .\install.bat
 echo.
 echo 3. O descargar manualmente:
-echo    - Ir a: https://github.com/%GIT_USER%/bot-rpa-claro
+echo    - Ir a: https://github.com/ChampiP/bot-rpa
 echo    - Click en "Code" -^> "Download ZIP"
 echo    - Extraer y ejecutar INSTALAR.bat
 echo.

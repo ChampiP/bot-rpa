@@ -4,6 +4,8 @@
 
 Este bot descarga **automáticamente** todos los diagramas y documentos del portal de Claro que necesites. Tú solo configuras qué buscar y él hace todo el trabajo.
 
+**🔗 Repositorio:** https://github.com/ChampiP/bot-rpa
+
 ---
 
 ## 🚀 INICIO RAPIDO (3 Pasos)
@@ -13,16 +15,17 @@ Este bot descarga **automáticamente** todos los diagramas y documentos del port
 **Opción 1: Instalación Automática desde GitHub (Recomendado)**
 ```bash
 # En PowerShell (Administrador)
-irm https://raw.githubusercontent.com/TU_USUARIO/bot-rpa-claro/main/INSTALAR_DESDE_GITHUB.bat | iex
+irm https://raw.githubusercontent.com/ChampiP/bot-rpa/main/INSTALAR_DESDE_GITHUB.bat -outfile install.bat; .\install.bat
 ```
 
 **Opción 2: Descarga Manual**
 ```
-1. Descarga el repositorio desde GitHub
-2. Extrae los archivos
-3. Haz doble clic en: INSTALAR.bat
-4. Espera 2-3 minutos
-5. ¡Listo!
+1. Ve a: https://github.com/ChampiP/bot-rpa
+2. Click en "Code" → "Download ZIP"
+3. Extrae los archivos
+4. Haz doble clic en: INSTALAR.bat
+5. Espera 2-3 minutos
+6. ¡Listo!
 ```
 
 ### 1️⃣ INSTALAR (Solo la primera vez)
@@ -126,16 +129,26 @@ Ejemplo:
 
 ## 📦 ¿Cómo comparto esto con mis compañeros?
 
-### Método 1: Crear Paquete Automático (Recomendado)
+### Método 1: Compartir Link de GitHub (Más Fácil) ⭐
+Simplemente comparte: **https://github.com/ChampiP/bot-rpa**
+
+Tus compañeros:
+1. Abren el link
+2. Click en "Code" → "Download ZIP"
+3. Extraen y ejecutan `INSTALAR.bat`
+4. ¡Listo!
+
+### Método 2: Comando de Instalación Directa
+Tu compañero ejecuta en PowerShell (Administrador):
+```powershell
+irm https://raw.githubusercontent.com/ChampiP/bot-rpa/main/INSTALAR_DESDE_GITHUB.bat -outfile install.bat; .\install.bat
+```
+
+### Método 3: Crear Paquete Local
 1. Ejecuta `CREAR_PAQUETE_PORTABLE.bat`
 2. Se creará carpeta `BOT_RPA_CLARO_PORTABLE`
-3. Comparte esa carpeta (puedes subirla a Drive, OneDrive, etc.)
-4. Tu compañero solo ejecuta `INSTALAR.bat`
-
-### Método 2: Manual
-1. Copia toda la carpeta del bot
-2. Compártela
-3. Tu compañero ejecuta `INSTALAR.bat`
+3. Comparte esa carpeta (Drive, OneDrive, USB, etc.)
+4. Tu compañero ejecuta `INSTALAR.bat`
 
 ⚠️ **IMPORTANTE:** La carpeta `.venv` NO se debe compartir. El instalador la crea automáticamente.
 
