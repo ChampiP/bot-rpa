@@ -6,13 +6,16 @@ DESCARGA DESDE GITHUB:
 
 Link del repositorio: https://github.com/ChampiP/bot-rpa
 
-OPCION 1 - Instalacion con un comando (PowerShell como Administrador):
+OPCION 1 - Instalacion con un comando (PowerShell, NO necesita Administrador):
    irm https://raw.githubusercontent.com/ChampiP/bot-rpa/main/INSTALAR_DESDE_GITHUB.bat -outfile install.bat; .\install.bat
+   
+   * Se instala en: Desktop\Bot_RPA_Claro
+   * Los .bat se copian al Escritorio automaticamente
 
 OPCION 2 - Descarga manual:
    1. Ve a: https://github.com/ChampiP/bot-rpa
    2. Click en "Code" -> "Download ZIP"
-   3. Extrae los archivos
+   3. Extrae los archivos EN TU ESCRITORIO (Desktop)
    4. Continua con las instrucciones de abajo
 
 ================================================================================

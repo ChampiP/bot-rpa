@@ -1,4 +1,4 @@
-# Interfaz grafica de usuario para el Bot RPA Claro
+"""Interfaz grafica de usuario para el Bot RPA Claro"""
 
 import os
 import json
@@ -310,9 +310,8 @@ class BotGUI(tk.Tk):
         # Instrucciones
         instructions = ttk.Label(
             frame,
-            text="1. Configura tus credenciales en la pestaña 'Ajustes'\n"
-                 "2. Presiona el boton para iniciar\n"
-                 "3. El bot hara todo automaticamente",
+            text="Presiona el boton para iniciar el proceso de descarga automatica.\n"
+                 "El bot cerrara Chrome automaticamente si esta abierto.",
             font=("Arial", 10),
             justify=tk.CENTER
         )
@@ -321,9 +320,9 @@ class BotGUI(tk.Tk):
         # Boton principal de ejecucion
         run_button = ttk.Button(
             frame,
-            text="🚀 INICIAR DESCARGA AUTOMATICA",
+            text="▶ EJECUTAR BOT",
             command=self.run_bot,
-            width=35
+            width=30
         )
         run_button.pack(pady=20)
         
@@ -332,9 +331,9 @@ class BotGUI(tk.Tk):
         info_frame.pack(pady=10, padx=20, fill=tk.X)
         
         info_items = [
-            ("📥 Archivos descargados en:", "Carpeta Descargas"),
-            ("⏱️ Duracion aproximada:", "5-10 minutos"),
-            ("✅ Proceso:", "100% Automatico")
+            ("📥 Ubicacion de descargas:", f"{os.environ.get('USERPROFILE', '')}\\Downloads"),
+            ("🔧 Configuracion:", "config/terms.json y .env"),
+            ("⚙️ Modo:", "Descarga automatica sin intervención")
         ]
         
         for label, value in info_items:
@@ -346,9 +345,9 @@ class BotGUI(tk.Tk):
         # Nota de advertencia
         warning_label = ttk.Label(
             frame,
-            text="💡 TIP: No cierres el navegador mientras el bot trabaja",
-            font=("Arial", 9, "italic"),
-            foreground="blue"
+            text="⚠️ Asegurate de haber configurado correctamente las credenciales en la pestana 'Ajustes'",
+            font=("Arial", 8, "italic"),
+            foreground="orange"
         )
         warning_label.pack(pady=10)
 
@@ -367,9 +366,9 @@ class BotGUI(tk.Tk):
         
         # Confirmar ejecucion
         response = messagebox.askyesno(
-            "Iniciar Bot",
-            "El bot comenzara a descargar los archivos.\n\n"
-            "¿Continuar?"
+            "Confirmar Ejecucion",
+            "¿Estas seguro de que deseas ejecutar el bot?\n"
+            "Chrome se cerrara automaticamente si esta abierto."
         )
         
         if not response:

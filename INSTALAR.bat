@@ -108,14 +108,26 @@ if not exist "config\terms.json" (
 echo [OK] Configuracion completada
 
 echo.
+echo [*] Copiando accesos directos al Escritorio...
+echo ------------------------------------------------------------
+
+:: Copiar .bat al Desktop para facil acceso
+copy /Y "EJECUTAR_BOT.bat" "%USERPROFILE%\Desktop\" >nul 2>&1
+copy /Y "VALIDAR_BOT.bat" "%USERPROFILE%\Desktop\" >nul 2>&1
+copy /Y "SUBIR_A_GITHUB.bat" "%USERPROFILE%\Desktop\" >nul 2>&1
+
+echo [OK] Accesos directos creados en el Escritorio
+
+echo.
 echo ============================================================
 echo    INSTALACION COMPLETADA EXITOSAMENTE
 echo ============================================================
 echo.
 echo [OK] El bot esta listo para usar
+echo [OK] Accesos directos en el Escritorio (Desktop)
 echo.
 echo PROXIMO PASO:
-echo - Ejecuta "EJECUTAR_BOT.bat" para iniciar el bot
+echo - Ve a tu Escritorio y ejecuta "EJECUTAR_BOT.bat"
 echo - Se abrira una interfaz grafica simple
 echo.
 echo Presiona cualquier tecla para cerrar...
