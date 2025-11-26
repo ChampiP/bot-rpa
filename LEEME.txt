@@ -2,6 +2,21 @@
     BOT RPA - DESCARGA AUTOMATICA DE DIAGRAMAS CLARO
 ================================================================================
 
+DESCARGA DESDE GITHUB:
+
+Link del repositorio: https://github.com/TU_USUARIO/bot-rpa-claro
+
+OPCION 1 - Instalacion con un comando (PowerShell como Administrador):
+   irm https://raw.githubusercontent.com/TU_USUARIO/bot-rpa-claro/main/INSTALAR_DESDE_GITHUB.bat -outfile install.bat; .\install.bat
+
+OPCION 2 - Descarga manual:
+   1. Ve a: https://github.com/TU_USUARIO/bot-rpa-claro
+   2. Click en "Code" -> "Download ZIP"
+   3. Extrae los archivos
+   4. Continua con las instrucciones de abajo
+
+================================================================================
+
 INSTRUCCIONES DE USO (SUPER FACIL):
 
 1. PRIMERA VEZ - INSTALAR:
