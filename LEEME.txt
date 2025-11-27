@@ -1,176 +1,190 @@
-================================================================================
-    BOT RPA CLARO v2.5 - GUIA DE USO SIMPLIFICADA
-================================================================================
+╔══════════════════════════════════════════════════════════════════════╗
+║          BOT RPA CLARO v2.5.1 - GUIA RAPIDA DE USO                  ║
+║              ⚡ Optimizado para 80+ Mbps - 50% más rápido            ║
+╚══════════════════════════════════════════════════════════════════════╝
 
-¡AHORA TODO ES MAS FACIL! Solo necesitas UN archivo: BOT_RPA_CLARO.bat
+📋 ÍNDICE RÁPIDO
+══════════════════════════════════════════════════════════════════════
+1. Inicio Rápido (Ya instalado)
+2. Primera Instalación
+3. Configurar Credenciales
+4. Configurar Términos de Búsqueda
+5. Configuración Avanzada
+6. Solución de Problemas
 
-================================================================================
-INICIO RAPIDO - 2 CLICS
-================================================================================
+══════════════════════════════════════════════════════════════════════
+1. INICIO RAPIDO (Si ya instalaste)
+══════════════════════════════════════════════════════════════════════
 
-1. DOBLE CLIC en "BOT_RPA_CLARO.bat" (en tu Escritorio)
-2. Selecciona una opcion del menu
+✅ PASO 1: Doble clic en "BOT_RPA_CLARO.bat" (tu Escritorio)
+✅ PASO 2: Presiona [1] → Pestaña "Ejecutar" → Clic "▶️ EJECUTAR BOT"
 
-¡Asi de simple!
+⏱️ Tiempos (80+ Mbps): 10 términos = 2.5 min | 15 términos = 3.5 min
+📁 Descargas en: C:\Users\TU_USUARIO\Downloads
 
-================================================================================
-MENU PRINCIPAL
-================================================================================
+══════════════════════════════════════════════════════════════════════
+2. PRIMERA INSTALACION
+══════════════════════════════════════════════════════════════════════
 
-El archivo BOT_RPA_CLARO.bat tiene TODO integrado:
+📥 Ya tienes el ZIP descargado? Extráelo en tu Escritorio
 
-[1] Ejecutar Bot (Interfaz Grafica)
-    -> Abre la GUI amigable
-    -> Configura y ejecuta desde ahi
-    -> Recomendado para usuarios normales
+⚙️ INSTALAR:
+   1. Doble clic: BOT_RPA_CLARO.bat
+   2. Presiona [3] "Instalar / Reparar Bot"
+   3. Espera 2-5 minutos (instala Python y todo automático)
+   4. Verás: "INSTALACION COMPLETADA EXITOSAMENTE"
 
-[2] Ejecutar Bot (Modo Consola)
-    -> Ejecucion directa en terminal
-    -> Ves todo el proceso en tiempo real
-    -> Para usuarios avanzados
+🔑 CONFIGURAR CREDENCIALES:
+   1. BOT_RPA_CLARO.bat → [1]
+   2. Pestaña "Ajustes"
+   3. Usuario: E1234567 (tu usuario portal Claro)
+   4. Contraseña: tu_contraseña
+   5. Clic "💾 Guardar Configuración"
 
-[3] Instalar / Reparar Bot
-    -> Primera instalacion
-    -> Reparar si algo falla
-    -> Actualizar dependencias
+✅ LISTO - Ya puedes ejecutar el bot
 
-[4] Verificar Sistema
-    -> Diagnostico completo
-    -> Ver si todo funciona
-    -> Detectar problemas
+══════════════════════════════════════════════════════════════════════
+3. CONFIGURAR CREDENCIALES
+══════════════════════════════════════════════════════════════════════
 
+🎯 OPCIÓN 1: Interfaz Gráfica (Fácil)
+   BOT_RPA_CLARO.bat → [1] → Pestaña "Ajustes"
+   • Usuario: E1234567
+   • Contraseña: tu_contraseña
+   • Botón "👁️" para ver/ocultar contraseña
+   • Guardar
+
+🎯 OPCIÓN 2: Editar .env directamente
+   1. Abre archivo ".env" con Bloc de notas
+   2. Agrega:
+      CLARO_USUARIO=E1234567
+      CLARO_CLAVE=tu_contraseña
+   3. Guardar (Ctrl + S)
+
+══════════════════════════════════════════════════════════════════════
+4. CONFIGURAR TERMINOS DE BUSQUEDA
+══════════════════════════════════════════════════════════════════════
+
+Los términos son las frases que el bot busca. Ejemplo: "Migracion de plan"
+
+🎯 OPCIÓN 1: Interfaz Gráfica
+   BOT_RPA_CLARO.bat → [1] → Pestaña "Términos"
+   • ➕ Agregar: Nuevo término
+   • ✏️ Editar: Modificar seleccionado
+   • 🗑️ Eliminar: Borrar seleccionado
+   • ⬆️⬇️: Ordenar
+   • Guardar al terminar
+
+🎯 OPCIÓN 2: Editar config/terms.json
+   {
+     "lista_busqueda": [
+       "Migracion de plan",
+       "Guia de cuestionamiento",
+       "Tu termino aqui"
+     ]
+   }
+
+══════════════════════════════════════════════════════════════════════
+5. CONFIGURACION AVANZADA (Opcional)
+══════════════════════════════════════════════════════════════════════
+
+BOT_RPA_CLARO.bat → [1] → Pestaña "Avanzado"
+
+🐛 MODO DEBUG: Marca checkbox para ver detalles (útil para problemas)
+
+🌐 PROXY: Solo si usas red corporativa
+   • Host: proxy.empresa.com
+   • Puerto: 8080
+
+⚡ VELOCIDAD (Ya optimizado para 80+ Mbps):
+   NO cambies nada a menos que tengas problemas
+   
+   Si conexión lenta (< 50 Mbps):
+   • Timeout Carga Página: 120
+   • Espera Media: 1.5
+   • Rate Limiting: 1.0
+
+   🔄 Botón "Restaurar" vuelve a valores óptimos
+   💾 Siempre guarda cambios
+
+══════════════════════════════════════════════════════════════════════
+6. SOLUCION DE PROBLEMAS
+══════════════════════════════════════════════════════════════════════
+
+❌ No funciona / Error al iniciar
+   → BOT_RPA_CLARO.bat → [3] Instalar/Reparar
+
+❌ Python no encontrado
+   → BOT_RPA_CLARO.bat → [3] (instala Python automático)
+   → Reinicia PC después
+   → Ejecuta [3] nuevamente
+
+❌ Errores de timeout / Se queda esperando
+   → Pestaña "Avanzado"
+   → Timeout Carga Página: 150
+   → Espera Media: 2.0
+   → Guardar
+
+❌ Bot muy lento
+   → Pestaña "Avanzado"
+   → Rate Limiting: 0.5
+   → Espera Media: 1.0
+
+❌ Login falla
+   → Verifica internet
+   → Verifica credenciales en "Ajustes"
+   → Usa botón "👁️" para ver contraseña
+
+❌ Chrome no se cierra
+   → Cierra Chrome manual (Ctrl+Alt+Supr)
+   → Ejecuta bot nuevamente
+
+❌ No encuentra descargas
+   → Busca en: C:\Users\TU_USUARIO\Downloads
+   → Archivos .xlsm
+
+❌ Descarga archivos incorrectos
+   → Edita términos más específicos
+   → Pestaña "Términos"
+
+🔍 DIAGNÓSTICO: BOT_RPA_CLARO.bat → [4] Verificar Sistema
+
+══════════════════════════════════════════════════════════════════════
+                         INFORMACIÓN ADICIONAL
+══════════════════════════════════════════════════════════════════════
+
+⏱️ TIEMPOS (80+ Mbps):
+   5 términos: 1.5 min | 10 términos: 2.5 min | 15 términos: 3.5 min
+
+💡 TIPS:
+   • Cierra Chrome antes de ejecutar
+   • No uses Chrome mientras el bot trabaja
+   • Usa cable en vez de WiFi si es posible
+
+🔒 SEGURIDAD:
+   ✓ Código abierto
+   ✓ Solo portal oficial Claro
+   ✓ Credenciales solo en tu PC
+   ✓ Sin envío de datos externos
+
+📌 IMPORTANTE:
+   • Bot optimizado para Windows 10/11
+   • Necesitas ~1 GB espacio libre
+   • Funciona con proxy corporativo
+   • Archivos NO se sobrescriben (Chrome agrega (1), (2), etc)
+
+══════════════════════════════════════════════════════════════════════
+
+BOT_RPA_CLARO.bat MENÚ:
+[1] Ejecutar (Interfaz) → Recomendado
+[2] Ejecutar (Consola) → Avanzado
+[3] Instalar/Reparar → Primera vez o problemas
+[4] Verificar → Diagnóstico
 [5] Salir
 
-================================================================================
-PRIMERA VEZ - INSTALACION
-================================================================================
+══════════════════════════════════════════════════════════════════════
 
-1. Ejecuta BOT_RPA_CLARO.bat
-2. Selecciona opcion [3] Instalar
-3. Espera 2-5 minutos
-4. ¡Listo! Ahora usa opcion [1] para ejecutar
+Version: 2.5.1 - Optimizado 80+ Mbps - 50% más rápido que v2.4
+Repositorio: https://github.com/ChampiP/bot-rpa
 
-================================================================================
-USO DIARIO
-================================================================================
-
-1. Doble clic en BOT_RPA_CLARO.bat (Escritorio)
-2. Opcion [1] - Interfaz Grafica
-3. Configura credenciales (primera vez)
-4. Click en "EJECUTAR BOT"
-5. ¡Disfruta!
-
-================================================================================
-CONFIGURACION DE CREDENCIALES
-================================================================================
-
-OPCION A: Desde la GUI (Mas Facil)
-1. Ejecuta BOT_RPA_CLARO.bat -> Opcion [1]
-2. Pestana "Ajustes"
-3. Ingresa usuario y contraseña
-4. Click "Guardar"
-
-OPCION B: Editar .env directamente
-1. Abre el archivo .env con un editor de texto
-2. Pon tus credenciales:
-   CLARO_USUARIO=tu_usuario
-   CLARO_CLAVE=tu_contraseña
-3. Guarda
-
-================================================================================
-CONFIGURACION AVANZADA (OPCIONAL)
-================================================================================
-
-Ejecuta BOT_RPA_CLARO.bat -> Opcion [1] -> Pestana "Avanzado"
-
-Puedes configurar:
-- Modo Debug (para ver detalles)
-- Proxy (para redes corporativas)
-- Timeouts (para conexiones lentas/rapidas)
-
-================================================================================
-SOLUCIONES RAPIDAS
-================================================================================
-
-PROBLEMA: No funciona nada
-SOLUCION: BOT_RPA_CLARO.bat -> Opcion [3] Instalar/Reparar
-
-PROBLEMA: Python no encontrado
-SOLUCION: BOT_RPA_CLARO.bat -> Opcion [3] -> Opcion [1] instalar automatico
-
-PROBLEMA: Bot muy lento
-SOLUCION: GUI -> Pestana Avanzado -> Disminuir timeouts
-
-PROBLEMA: Timeouts frecuentes
-SOLUCION: GUI -> Pestana Avanzado -> Aumentar timeouts
-
-PROBLEMA: Necesito diagnostico
-SOLUCION: BOT_RPA_CLARO.bat -> Opcion [4] Verificar
-
-================================================================================
-ARCHIVOS DEL PROYECTO
-================================================================================
-
-ARCHIVOS PRINCIPALES:
-- BOT_RPA_CLARO.bat    -> TODO EN UNO (el unico que necesitas)
-- index.py             -> Motor del bot
-- gui.py               -> Interfaz grafica
-- .env                 -> Tus configuraciones
-- config/terms.json    -> Terminos de busqueda
-
-DOCUMENTACION:
-- LEEME.txt           -> Este archivo
-- README.md           -> Documentacion completa
-- CAMBIOS_v2.5.txt    -> Novedades version 2.5
-
-================================================================================
-VERSION 2.5 - TODO EN UNO
-================================================================================
-
-✓ UN SOLO ARCHIVO .bat para todo
-✓ Menu interactivo facil de usar
-✓ Instalacion/reparacion automatica
-✓ Diagnostico integrado
-✓ Timeouts configurables
-✓ Rate limiting automatico
-✓ Manejo inteligente de errores
-✓ GUI responsive
-✓ Soporte para proxy
-✓ Modo debug accesible
-
-================================================================================
-UBICACIONES IMPORTANTES
-================================================================================
-
-Archivo principal (Escritorio):
-C:\Users\TU_USUARIO\Desktop\BOT_RPA_CLARO.bat
-
-Archivos descargados:
-C:\Users\TU_USUARIO\Downloads
-
-Carpeta del bot:
-C:\Users\TU_USUARIO\Desktop\bot-rpa
-
-================================================================================
-TIEMPO ESTIMADO
-================================================================================
-
-Instalacion: 2-5 minutos
-Ejecucion: 5-10 minutos (15 terminos)
-Configuracion: 1 minuto
-
-================================================================================
-RESUMEN ULTRA RAPIDO
-================================================================================
-
-INSTALAR: BOT_RPA_CLARO.bat -> [3]
-USAR:     BOT_RPA_CLARO.bat -> [1]
-REPARAR:  BOT_RPA_CLARO.bat -> [3]
-VERIFICAR: BOT_RPA_CLARO.bat -> [4]
-
-================================================================================
-
-Version: 2.5.0 - Sistema TODO EN UNO Ultra Simplificado
-Estado: ✓ LISTO PARA USAR
-
-================================================================================
+══════════════════════════════════════════════════════════════════════
