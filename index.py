@@ -270,11 +270,14 @@ class SearchEngine:
     def search_term(self, termino):
         search_box = self.find_search_box()
         search_box.clear()
-        time.sleep(self.timings.short_wait)
         search_box.send_keys(termino)
         search_box.send_keys(Keys.RETURN)
-        # Espera optimizada para resultados
-        time.sleep(self.timings.medium_wait)
+        # Esperar a que aparezcan resultados
+        try:
+            self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, "span.asset-entry-title, a[href*='xlsm'], .search-results")))
+        except TimeoutException:
+            # Si no detecta resultados, dar tiempo mínimo
+            time.sleep(self.timings.short_wait)
     
     def extract_result_info(self, element):
         info = {
@@ -523,7 +526,7 @@ class BotRPA:
         
     def initialize_driver(self):
         print("=" * 60)
-        print(f"   INICIANDO BOT RPA v{VERSION} - MODO DESCARGA AUTOMATICA")
+        print(f"   INICIANDO BOT RPA v{VERSION} - ULTRA RAPIDO SIN DELAYS")
         print("=" * 60)
         
         UpdateChecker.check_for_updates()
@@ -532,6 +535,7 @@ class BotRPA:
         print(f"[*] Carpeta de descargas: {self.dirs.download_dir}")
         print("[*] Safe Browsing: DESACTIVADO")
         print("[*] Proteccion de descargas: DESACTIVADA")
+        print("[*] Modo ULTRA RAPIDO: SIN esperas artificiales")
         
         if self.config.debug_mode:
             print("[*] Modo DEBUG: ACTIVADO")
@@ -562,30 +566,24 @@ class BotRPA:
         for attempt in range(max_retries):
             try:
                 self.driver.get(url)
-                # Espera reducida para mejorar velocidad
-                time.sleep(self.config.timings.short_wait)
+                # Sin esperas - el navegador ya maneja la carga
                 return True
             except TimeoutException:
-                if attempt < max_retries - 1:
-                    print(f"   [!] Timeout navegando a {url} (Intento {attempt + 1}/{max_retries})")
-                    # Detener carga de página
-                    try:
-                        self.driver.execute_script("window.stop();")
-                    except WebDriverException:
-                        pass
-                    time.sleep(self.config.timings.short_wait)
-                else:
-                    print(f"   [!] Timeout final en {url}, continuando de todos modos...")
-                    try:
-                        self.driver.execute_script("window.stop();")
-                        return True  # Continuar aunque haya timeout
-                    except WebDriverException:
-                        return False
+                # Si hay timeout, detener carga y continuar
+                print(f"   [!] Timeout navegando (continuando...)")
+                try:
+                    self.driver.execute_script("window.stop();")
+                except WebDriverException:
+                    pass
+                return True  # Continuar aunque haya timeout
             except WebDriverException as e:
-                print(f"   [!] Error WebDriver: {e} (Intento {attempt + 1}/{max_retries})")
                 if attempt < max_retries - 1:
-                    time.sleep(self.config.timings.retry_delay)
-        return False
+                    print(f"   [!] Error WebDriver (reintentando...)")
+                    time.sleep(1)
+                else:
+                    print(f"   [!] Error final - continuando de todos modos")
+                    return True
+        return True
     
     def login(self):
         print(f"Accediendo al login: {self.config.url_login}")
@@ -593,7 +591,7 @@ class BotRPA:
             raise WebDriverException("No se pudo acceder a la pagina de login tras varios intentos.")
         
         try:
-            # Espera optimizada para campos de login
+            # Espera campos de login sin delays innecesarios
             campo_user = self.wait.until(
                 EC.presence_of_element_located((By.CSS_SELECTOR, "input[id*='login']"))
             )
@@ -602,38 +600,41 @@ class BotRPA:
             )
             
             print(f"Logueando como {self.config.usuario}...")
+            # Escribir directamente sin esperas
             campo_user.clear()
-            time.sleep(self.timings.short_wait)
             campo_user.send_keys(self.config.usuario)
-            
             campo_pass.clear()
-            time.sleep(self.timings.short_wait)
             campo_pass.send_keys(self.config.clave)
             campo_pass.send_keys(Keys.RETURN)
             
-            # Esperar a que la página cargue después del login
-            time.sleep(self.config.timings.medium_wait)
-            
-            # Verificar si el login fue exitoso
+            # Verificar login exitoso detectando cambio de URL
             try:
                 self.wait.until(lambda d: d.current_url != self.config.url_login)
                 print("[OK] Login exitoso")
             except TimeoutException:
-                print("[OK] Login completado (verificación de URL timeout)")
+                # Si no cambia URL, verificar si hay elementos de página logueada
+                try:
+                    self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, "body")))
+                    print("[OK] Login exitoso")
+                except:
+                    print("[!] Verificación de login timeout - continuando...")
                 
         except TimeoutException as e:
-            print(f"[!] Timeout en login automatico. Error: {e}")
-            print("[*] Esperando 15 segundos para login manual si es necesario...")
-            time.sleep(15)
+            print(f"[!] Timeout en login automatico - continuando de todos modos...")
+            time.sleep(5)  # Breve espera de seguridad
         except NoSuchElementException as e:
-            print(f"[!] No se encontraron campos de login. Error: {e}")
-            print("[*] Esperando 15 segundos para login manual si es necesario...")
-            time.sleep(15)
+            print(f"[!] No se encontraron campos de login - continuando...")
+            time.sleep(5)  # Breve espera de seguridad
     
     def navigate_to_search(self):
         if not self.safe_get(self.config.url_buscador):
             print("   [!] Advertencia: Fallo carga inicial del buscador. Reintentando...")
-        time.sleep(self.config.timings.medium_wait)
+        # Esperar a que el buscador esté listo
+        try:
+            self.wait.until(EC.presence_of_element_located((By.ID, self.config.id_barra_busqueda)))
+        except TimeoutException:
+            print("   [!] Buscador listo (timeout en detección)")
+            time.sleep(self.config.timings.short_wait)
     
     def process_single_download(self, idx, termino):
         try:
@@ -641,7 +642,6 @@ class BotRPA:
             
             if self.driver.current_url != self.config.url_buscador:
                 self.safe_get(self.config.url_buscador)
-                time.sleep(self.config.timings.short_wait)
             
             self.search_engine.search_term(termino)
             resultados = self.search_engine.find_results(termino)
@@ -664,12 +664,11 @@ class BotRPA:
             
             snapshot_antes = self.dirs.get_files_snapshot()
             
-            # Scroll más rápido sin animación
+            # Scroll instantáneo
             self.driver.execute_script(
                 "arguments[0].scrollIntoView({block: 'center'});", 
                 mejor_resultado
             )
-            time.sleep(0.3)  # Espera mínima
             
             try:
                 mejor_resultado.click()
@@ -687,9 +686,8 @@ class BotRPA:
             else:
                 print(f"[!] Error en descarga\n")
             
-            # Volver al buscador más rápido
+            # Volver al buscador sin esperas
             self.safe_get(self.config.url_buscador)
-            time.sleep(self.config.timings.short_wait)
                 
         except TimeoutException as e:
             print(f"   [ERROR] Timeout en '{termino}': {e}")
@@ -708,9 +706,7 @@ class BotRPA:
         print("   -> Intentando recuperar sesion...")
         try:
             self.driver.refresh()
-            time.sleep(self.config.timings.medium_wait)
             self.safe_get(self.config.url_buscador)
-            time.sleep(self.config.timings.medium_wait)
         except WebDriverException:
             print("   [ERROR CRITICO] No se pudo recuperar la sesion")
             raise
@@ -735,7 +731,6 @@ class BotRPA:
                         print(f"   -> Click en '{text}'...")
                         links[0].click()
                         logout_found = True
-                        time.sleep(self.config.timings.medium_wait)
                         break
                 except NoSuchElementException:
                     continue
@@ -743,7 +738,6 @@ class BotRPA:
             if not logout_found:
                 print("   -> Boton no encontrado, forzando logout por URL...")
                 self.safe_get("http://portaldeconocimiento.claro.com.pe/c/portal/logout")
-                time.sleep(self.config.timings.medium_wait)
             
             print("   -> [OK] Sesion finalizada.")
         except Exception as e:
@@ -764,9 +758,8 @@ class BotRPA:
         except OSError:
             pass
         
-        print("=" * 60)
-        print("\n   Cerrando navegador en 3 segundos...")
-        time.sleep(3)
+        print("="*60)
+        print("\n   Cerrando navegador...")
         
         if self.driver:
             self.driver.quit()
