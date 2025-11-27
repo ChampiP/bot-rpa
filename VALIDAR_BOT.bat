@@ -14,12 +14,36 @@ pause
 echo.
 echo [TEST 1/5] Verificando Python...
 echo ------------------------------------------------------------
-python --version
-if %errorlevel% neq 0 (
-    echo [X] FALLO: Python no encontrado
-    echo     Ejecuta INSTALAR.bat primero
-    goto ERROR
+
+:: Buscar Python en diferentes comandos
+set PYTHON_FOUND=0
+
+python --version >nul 2>&1
+if %errorlevel% equ 0 (
+    python --version
+    set PYTHON_FOUND=1
+    goto :PYTHON_CHECK_OK
 )
+
+py --version >nul 2>&1
+if %errorlevel% equ 0 (
+    py --version
+    set PYTHON_FOUND=1
+    goto :PYTHON_CHECK_OK
+)
+
+python3 --version >nul 2>&1
+if %errorlevel% equ 0 (
+    python3 --version
+    set PYTHON_FOUND=1
+    goto :PYTHON_CHECK_OK
+)
+
+echo [X] FALLO: Python no encontrado
+echo     Ejecuta INSTALAR.bat primero
+goto ERROR
+
+:PYTHON_CHECK_OK
 echo [OK] Python detectado
 
 echo.

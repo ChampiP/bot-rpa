@@ -3,13 +3,50 @@ title BOT RPA CLARO
 color 0B
 cls
 
+:: Verificar que Python esta disponible
+set PYTHON_FOUND=0
+
+python --version >nul 2>&1
+if %errorlevel% equ 0 set PYTHON_FOUND=1
+
+py --version >nul 2>&1
+if %errorlevel% equ 0 set PYTHON_FOUND=1
+
+python3 --version >nul 2>&1
+if %errorlevel% equ 0 set PYTHON_FOUND=1
+
+if %PYTHON_FOUND% equ 0 (
+    echo ============================================================
+    echo    ERROR: Python no instalado
+    echo ============================================================
+    echo.
+    echo [!] Python no esta instalado o no esta en el PATH
+    echo [!] Por favor ejecuta "INSTALAR.bat" primero
+    echo.
+    pause
+    exit /b 1
+)
+
 :: Activar entorno virtual
 if not exist ".venv" (
     echo ============================================================
     echo    ERROR: Entorno no configurado
     echo ============================================================
     echo.
-    echo [!] Primero debes ejecutar "INSTALAR.bat"
+    echo [!] El entorno virtual no existe
+    echo [!] Por favor ejecuta "INSTALAR.bat" primero
+    echo.
+    pause
+    exit /b 1
+)
+
+if not exist ".venv\Scripts\activate.bat" (
+    echo ============================================================
+    echo    ERROR: Entorno virtual corrupto
+    echo ============================================================
+    echo.
+    echo [!] El entorno virtual esta danado
+    echo [!] Por favor ejecuta "INSTALAR.bat" nuevamente
     echo.
     pause
     exit /b 1

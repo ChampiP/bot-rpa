@@ -42,16 +42,33 @@ IMPORTANTE:
 - El bot necesita internet para funcionar
 - No cierres el navegador mientras trabaja
 - Si algo falla, ejecuta "INSTALAR.bat" nuevamente
+- Python se instala automaticamente si no lo tienes
+
+================================================================================
+PROBLEMAS CON PYTHON?
+================================================================================
+
+Si tienes problemas con la instalacion de Python:
+
+1. Ejecuta "VERIFICAR_PYTHON.bat" para diagnosticar el problema
+2. Si Python no se instalo, el INSTALAR.bat te guiara paso a paso
+3. Asegurate de marcar "Add Python to PATH" en la instalacion manual
+4. Si ya tienes Python instalado pero no funciona, reinicia tu PC
+
+NOTA: El instalador intentara instalar Python automaticamente usando winget.
+      Si no funciona, te dara instrucciones claras para hacerlo manualmente.
 
 ================================================================================
 SOPORTE:
 ================================================================================
 
 Si tienes problemas:
-1. Verifica que tienes internet
-2. Ejecuta "INSTALAR.bat" de nuevo
-3. Reinicia tu computadora
-4. Contacta al administrador del sistema
+1. Ejecuta "VERIFICAR_PYTHON.bat" para diagnostico
+2. Verifica que tienes internet
+3. Ejecuta "INSTALAR.bat" de nuevo
+4. Reinicia tu computadora
+5. Si Python falla, instalalo manualmente desde python.org
+6. Contacta al administrador del sistema
 
 ================================================================================
 ARCHIVOS DEL PAQUETE:
@@ -59,6 +76,8 @@ ARCHIVOS DEL PAQUETE:
 
 INSTALAR.bat         -> Ejecuta esto la primera vez
 EJECUTAR_BOT.bat     -> Usa esto cada vez que quieras usar el bot
+VALIDAR_BOT.bat      -> Verifica que todo funcione correctamente
+VERIFICAR_PYTHON.bat -> Diagnostica problemas con Python (NUEVO)
 LEEME.txt            -> Este archivo
 index.py             -> Codigo principal (no tocar)
 gui.py               -> Interfaz grafica (no tocar)
