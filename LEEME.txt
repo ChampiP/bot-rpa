@@ -1,125 +1,176 @@
 ================================================================================
-    BOT RPA - DESCARGA AUTOMATICA DE DIAGRAMAS CLARO
+    BOT RPA CLARO v2.5 - GUIA DE USO SIMPLIFICADA
 ================================================================================
 
-DESCARGA DESDE GITHUB:
+¡AHORA TODO ES MAS FACIL! Solo necesitas UN archivo: BOT_RPA_CLARO.bat
 
-Link del repositorio: https://github.com/ChampiP/bot-rpa
+================================================================================
+INICIO RAPIDO - 2 CLICS
+================================================================================
 
-OPCION 1 - Instalacion con un comando (PowerShell, NO necesita Administrador):
-   irm https://raw.githubusercontent.com/ChampiP/bot-rpa/main/INSTALAR_DESDE_GITHUB.bat -outfile install.bat; .\install.bat
-   
-   * Se instala en: Desktop\Bot_RPA_Claro
-   * Crea BOT_RPA_CLARO.bat en tu Escritorio automaticamente
+1. DOBLE CLIC en "BOT_RPA_CLARO.bat" (en tu Escritorio)
+2. Selecciona una opcion del menu
 
-OPCION 2 - Descarga manual:
-   1. Ve a: https://github.com/ChampiP/bot-rpa
-   2. Click en "Code" -> "Download ZIP"
-   3. Extrae los archivos DONDE QUIERAS (Escritorio, Documentos, etc.)
-   4. Continua con las instrucciones de abajo
+¡Asi de simple!
+
+================================================================================
+MENU PRINCIPAL
+================================================================================
+
+El archivo BOT_RPA_CLARO.bat tiene TODO integrado:
+
+[1] Ejecutar Bot (Interfaz Grafica)
+    -> Abre la GUI amigable
+    -> Configura y ejecuta desde ahi
+    -> Recomendado para usuarios normales
+
+[2] Ejecutar Bot (Modo Consola)
+    -> Ejecucion directa en terminal
+    -> Ves todo el proceso en tiempo real
+    -> Para usuarios avanzados
+
+[3] Instalar / Reparar Bot
+    -> Primera instalacion
+    -> Reparar si algo falla
+    -> Actualizar dependencias
+
+[4] Verificar Sistema
+    -> Diagnostico completo
+    -> Ver si todo funciona
+    -> Detectar problemas
+
+[5] Salir
+
+================================================================================
+PRIMERA VEZ - INSTALACION
+================================================================================
+
+1. Ejecuta BOT_RPA_CLARO.bat
+2. Selecciona opcion [3] Instalar
+3. Espera 2-5 minutos
+4. ¡Listo! Ahora usa opcion [1] para ejecutar
+
+================================================================================
+USO DIARIO
+================================================================================
+
+1. Doble clic en BOT_RPA_CLARO.bat (Escritorio)
+2. Opcion [1] - Interfaz Grafica
+3. Configura credenciales (primera vez)
+4. Click en "EJECUTAR BOT"
+5. ¡Disfruta!
+
+================================================================================
+CONFIGURACION DE CREDENCIALES
+================================================================================
+
+OPCION A: Desde la GUI (Mas Facil)
+1. Ejecuta BOT_RPA_CLARO.bat -> Opcion [1]
+2. Pestana "Ajustes"
+3. Ingresa usuario y contraseña
+4. Click "Guardar"
+
+OPCION B: Editar .env directamente
+1. Abre el archivo .env con un editor de texto
+2. Pon tus credenciales:
+   CLARO_USUARIO=tu_usuario
+   CLARO_CLAVE=tu_contraseña
+3. Guarda
+
+================================================================================
+CONFIGURACION AVANZADA (OPCIONAL)
+================================================================================
+
+Ejecuta BOT_RPA_CLARO.bat -> Opcion [1] -> Pestana "Avanzado"
+
+Puedes configurar:
+- Modo Debug (para ver detalles)
+- Proxy (para redes corporativas)
+- Timeouts (para conexiones lentas/rapidas)
+
+================================================================================
+SOLUCIONES RAPIDAS
+================================================================================
+
+PROBLEMA: No funciona nada
+SOLUCION: BOT_RPA_CLARO.bat -> Opcion [3] Instalar/Reparar
+
+PROBLEMA: Python no encontrado
+SOLUCION: BOT_RPA_CLARO.bat -> Opcion [3] -> Opcion [1] instalar automatico
+
+PROBLEMA: Bot muy lento
+SOLUCION: GUI -> Pestana Avanzado -> Disminuir timeouts
+
+PROBLEMA: Timeouts frecuentes
+SOLUCION: GUI -> Pestana Avanzado -> Aumentar timeouts
+
+PROBLEMA: Necesito diagnostico
+SOLUCION: BOT_RPA_CLARO.bat -> Opcion [4] Verificar
+
+================================================================================
+ARCHIVOS DEL PROYECTO
+================================================================================
+
+ARCHIVOS PRINCIPALES:
+- BOT_RPA_CLARO.bat    -> TODO EN UNO (el unico que necesitas)
+- index.py             -> Motor del bot
+- gui.py               -> Interfaz grafica
+- .env                 -> Tus configuraciones
+- config/terms.json    -> Terminos de busqueda
+
+DOCUMENTACION:
+- LEEME.txt           -> Este archivo
+- README.md           -> Documentacion completa
+- CAMBIOS_v2.5.txt    -> Novedades version 2.5
+
+================================================================================
+VERSION 2.5 - TODO EN UNO
+================================================================================
+
+✓ UN SOLO ARCHIVO .bat para todo
+✓ Menu interactivo facil de usar
+✓ Instalacion/reparacion automatica
+✓ Diagnostico integrado
+✓ Timeouts configurables
+✓ Rate limiting automatico
+✓ Manejo inteligente de errores
+✓ GUI responsive
+✓ Soporte para proxy
+✓ Modo debug accesible
+
+================================================================================
+UBICACIONES IMPORTANTES
+================================================================================
+
+Archivo principal (Escritorio):
+C:\Users\TU_USUARIO\Desktop\BOT_RPA_CLARO.bat
+
+Archivos descargados:
+C:\Users\TU_USUARIO\Downloads
+
+Carpeta del bot:
+C:\Users\TU_USUARIO\Desktop\bot-rpa
+
+================================================================================
+TIEMPO ESTIMADO
+================================================================================
+
+Instalacion: 2-5 minutos
+Ejecucion: 5-10 minutos (15 terminos)
+Configuracion: 1 minuto
+
+================================================================================
+RESUMEN ULTRA RAPIDO
+================================================================================
+
+INSTALAR: BOT_RPA_CLARO.bat -> [3]
+USAR:     BOT_RPA_CLARO.bat -> [1]
+REPARAR:  BOT_RPA_CLARO.bat -> [3]
+VERIFICAR: BOT_RPA_CLARO.bat -> [4]
 
 ================================================================================
 
-INSTRUCCIONES DE USO - SOLO 3 PASOS!
-
-PASO 1 - INSTALAR (solo la primera vez):
-   - Ve a la carpeta donde descargaste el bot
-   - Haz doble clic en "INSTALAR.bat"
-   - Espera a que termine (2-5 minutos)
-   - Al finalizar, tendra "BOT_RPA_CLARO.bat" en tu ESCRITORIO
-
-PASO 2 - CONFIGURAR (solo la primera vez):
-   - En tu ESCRITORIO, doble clic en "BOT_RPA_CLARO.bat"
-   - Selecciona opcion 1 (Interfaz Grafica)
-   - Ve a pestana "Ajustes"
-   - Ingresa tu usuario y contrasena
-   - Click en "Guardar Configuracion"
-
-PASO 3 - USAR EL BOT (cada vez que lo necesites):
-   - Doble clic en "BOT_RPA_CLARO.bat" (desde tu Escritorio)
-   - Opcion 1 -> Interfaz Grafica
-   - Pestana "Ejecutar" -> "INICIAR DESCARGA AUTOMATICA"
-   - El bot hara todo solo!
-
-================================================================================
-IMPORTANTE:
-================================================================================
-
-- Los archivos se descargan en tu carpeta "Descargas"
-- El bot necesita internet para funcionar
-- No cierres el navegador mientras trabaja
-- Si algo falla, ejecuta "INSTALAR.bat" nuevamente
-- Python se instala automaticamente si no lo tienes
-
-================================================================================
-EL BOT SE AUTO-REPARA!
-================================================================================
-
-NUEVO: El bot ahora tiene auto-reparacion inteligente!
-
-Cuando ejecutas "BOT_RPA_CLARO.bat", el bot automaticamente:
-- Verifica que Python este instalado
-- Verifica que el entorno virtual exista
-- Verifica que todos los archivos esten presentes
-- Si detecta problemas, te ofrece REPARARLOS AUTOMATICAMENTE
-
-Si ves este mensaje:
-   "SE DETECTARON PROBLEMAS"
-   [1] Auto-reparar ahora (Recomendado)
-   [2] Salir y hacerlo manualmente
-
-Simplemente presiona "1" y el bot se reparara solo!
-
-================================================================================
-PROBLEMAS CON PYTHON?
-================================================================================
-
-Si tienes problemas con la instalacion de Python:
-
-1. Ejecuta "VERIFICAR_PYTHON.bat" para diagnosticar el problema
-2. El INSTALAR.bat intentara instalar Python automaticamente
-3. Si falla, te dara instrucciones claras paso a paso
-4. Importante: Marca "Add Python to PATH" en instalacion manual
-5. Reinicia tu PC despues de instalar Python
-
-================================================================================
-SOPORTE:
-================================================================================
-
-Si tienes problemas:
-1. Ejecuta "VERIFICAR_PYTHON.bat" para diagnostico
-2. Verifica que tienes internet
-3. Ejecuta "INSTALAR.bat" de nuevo
-4. Reinicia tu computadora
-5. Si Python falla, instalalo manualmente desde python.org
-6. Contacta al administrador del sistema
-
-================================================================================
-ARCHIVOS DEL PAQUETE (SIMPLIFICADO):
-================================================================================
-
-ARCHIVOS QUE SI USARAS:
-   INSTALAR.bat            -> Ejecuta esto la primera vez o para reparar
-   BOT_RPA_CLARO.bat       -> Aparece en tu ESCRITORIO, usalo siempre
-   VERIFICAR_PYTHON.bat    -> Diagnostica problemas con Python
-
-ARCHIVOS DEL SISTEMA (NO TOCAR):
-   index.py                -> Codigo principal del bot
-   gui.py                  -> Interfaz grafica
-   requirements.txt        -> Lista de dependencias
-   .venv/                  -> Carpeta del entorno virtual
-
-================================================================================
-POR QUE ES MAS FACIL AHORA?
-================================================================================
-
-ANTES: Tenias que ejecutar varios .bat desde diferentes lugares
-AHORA: Solo usas BOT_RPA_CLARO.bat desde tu Escritorio
-
-ANTES: Si habia problemas, no sabias que hacer
-AHORA: El bot se auto-diagnostica y auto-repara
-
-ANTES: Los .bat del escritorio no sabian donde estaba la carpeta
-AHORA: El instalador guarda la ubicacion automaticamente
+Version: 2.5.0 - Sistema TODO EN UNO Ultra Simplificado
+Estado: ✓ LISTO PARA USAR
 
 ================================================================================

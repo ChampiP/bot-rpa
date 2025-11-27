@@ -1,21 +1,63 @@
-# Bot RPA para automatizacion de descargas desde el portal de Claro
-
 import time
 import os
 import subprocess
 import json
+import requests
+from datetime import datetime
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.common.exceptions import (
+    TimeoutException, 
+    NoSuchElementException, 
+    StaleElementReferenceException,
+    WebDriverException,
+    ElementClickInterceptedException
+)
 from dotenv import load_dotenv
+
+VERSION = "2.5.0"
+GITHUB_REPO = "ChampiP/bot-rpa"
+
+
+class UpdateChecker:
+    @staticmethod
+    def check_for_updates():
+        try:
+            url = f"https://api.github.com/repos/{GITHUB_REPO}/releases/latest"
+            response = requests.get(url, timeout=5)
+            if response.status_code == 200:
+                latest_version = response.json().get('tag_name', '').lstrip('v')
+                current_version = VERSION.lstrip('v')
+                if latest_version and latest_version > current_version:
+                    print(f"\n[!] Nueva version disponible: v{latest_version} (actual: v{current_version})")
+                    print(f"[!] Descarga desde: https://github.com/{GITHUB_REPO}/releases/latest\n")
+                    return True
+        except (requests.RequestException, KeyError):
+            pass
+        return False
+
+
+class TimingConfig:
+    def __init__(self):
+        load_dotenv()
+        self.short_wait = float(os.getenv('TIMING_SHORT_WAIT', '0.5'))
+        self.medium_wait = float(os.getenv('TIMING_MEDIUM_WAIT', '2'))
+        self.long_wait = float(os.getenv('TIMING_LONG_WAIT', '5'))
+        self.page_load_timeout = int(os.getenv('TIMING_PAGE_LOAD', '180'))
+        self.explicit_wait = int(os.getenv('TIMING_EXPLICIT_WAIT', '20'))
+        self.download_timeout = int(os.getenv('TIMING_DOWNLOAD_TIMEOUT', '60'))
+        self.rate_limit_delay = float(os.getenv('TIMING_RATE_LIMIT', '1.5'))
+        self.retry_delay = float(os.getenv('TIMING_RETRY_DELAY', '3'))
+    
+    def apply_rate_limit(self):
+        time.sleep(self.rate_limit_delay)
 
 
 class ConfigLoader:
-    # Carga y valida la configuracion del bot
-    
     def __init__(self):
         load_dotenv()
         self.usuario = os.getenv('CLARO_USUARIO')
@@ -23,20 +65,23 @@ class ConfigLoader:
         self.url_login = os.getenv('URL_LOGIN')
         self.url_buscador = os.getenv('URL_BUSCADOR')
         self.id_barra_busqueda = os.getenv('ID_BARRA_BUSQUEDA', '_3_keywords')
+        self.debug_mode = os.getenv('DEBUG_MODE', 'false').lower() == 'true'
+        self.proxy_enabled = os.getenv('PROXY_ENABLED', 'false').lower() == 'true'
+        self.proxy_host = os.getenv('PROXY_HOST', '')
+        self.proxy_port = os.getenv('PROXY_PORT', '')
         self.lista_busqueda = []
+        self.timings = TimingConfig()
         
         self._validate_credentials()
         self._load_search_terms()
     
     def _validate_credentials(self):
-        # Valida que las credenciales esten configuradas
         if not self.usuario or not self.clave:
             print("ERROR: No se encontraron las credenciales.")
             print("Asegurate de que el archivo .env existe y contiene CLARO_USUARIO y CLARO_CLAVE")
             exit(1)
     
     def _load_search_terms(self):
-        # Carga los terminos de busqueda desde config/terms.json
         config_path = os.path.join(os.path.dirname(__file__), 'config', 'terms.json')
         try:
             with open(config_path, 'r', encoding='utf-8') as f:
@@ -44,22 +89,19 @@ class ConfigLoader:
                 self.lista_busqueda = config.get('lista_busqueda', [])
                 if not self.lista_busqueda:
                     raise ValueError('lista_busqueda vacia en terms.json')
-        except Exception as e:
+        except (FileNotFoundError, json.JSONDecodeError, ValueError) as e:
             print(f"[ERROR CRITICO] No se pudo cargar terms.json ({e}).")
             print("El bot no puede continuar sin la lista de busqueda.")
             exit(1)
 
 
 class DirectoryManager:
-    # Gestiona los directorios de descarga
-    
     def __init__(self):
         self.download_dir = self._get_download_directory()
         self.final_dir = self._get_final_directory()
         self._create_directories()
     
     def _get_download_directory(self):
-        # Obtiene el directorio de descargas del usuario
         default_downloads = os.path.join(
             os.environ.get('USERPROFILE', os.getcwd()), 
             'Downloads'
@@ -67,17 +109,14 @@ class DirectoryManager:
         return os.path.abspath(default_downloads)
     
     def _get_final_directory(self):
-        # Obtiene el directorio final de almacenamiento
         return os.path.join(os.path.dirname(__file__), 'Diagramas_Claro_Final')
     
     def _create_directories(self):
-        # Crea los directorios si no existen
         for directory in [self.download_dir, self.final_dir]:
             if not os.path.exists(directory):
                 os.makedirs(directory)
     
     def get_files_snapshot(self):
-        # Obtiene un snapshot de los archivos en el directorio de descargas
         snapshot = {}
         if not os.path.exists(self.download_dir):
             return snapshot
@@ -87,17 +126,14 @@ class DirectoryManager:
             try:
                 if os.path.isfile(path):
                     snapshot[filename] = os.path.getmtime(path)
-            except:
+            except OSError:
                 pass
         return snapshot
 
 
 class FileUnlocker:
-    # Desbloquea archivos descargados de Windows
-    
     @staticmethod
     def unblock_file(file_path):
-        # Desbloquea un archivo usando PowerShell
         try:
             cmd = [
                 'powershell', 
@@ -116,27 +152,33 @@ class FileUnlocker:
                 capture_output=True, 
                 text=True, 
                 check=True, 
-                startupinfo=startupinfo
+                startupinfo=startupinfo,
+                timeout=10
             )
             
             print("   -> [OK] Archivo desbloqueado (Macros habilitadas).")
             return True
+        except subprocess.TimeoutExpired:
+            print(f"   -> [X] Timeout desbloqueando archivo")
+            return False
+        except subprocess.CalledProcessError as e:
+            print(f"   -> [X] Error PowerShell: {e}")
+            return False
         except Exception as e:
-            print(f"   -> [X] No se pudo desbloquear: {e}")
+            print(f"   -> [X] Error inesperado: {e}")
             return False
 
 
 class ChromeConfigurator:
-    # Configura las opciones de Chrome para el bot
-    
-    def __init__(self, download_directory):
+    def __init__(self, download_directory, config):
         self.download_dir = download_directory
+        self.config = config
         self.options = Options()
         self._configure_preferences()
         self._configure_arguments()
+        self._configure_proxy()
     
     def _configure_preferences(self):
-        # Configura las preferencias de Chrome
         prefs = {
             "download.default_directory": self.download_dir,
             "download.prompt_for_download": False,
@@ -154,7 +196,6 @@ class ChromeConfigurator:
         self.options.add_experimental_option("excludeSwitches", ["enable-logging"])
     
     def _configure_arguments(self):
-        # Configura los argumentos de linea de comandos de Chrome
         arguments = [
             '--ignore-certificate-errors',
             '--ignore-ssl-errors',
@@ -173,72 +214,67 @@ class ChromeConfigurator:
         for arg in arguments:
             self.options.add_argument(arg)
     
+    def _configure_proxy(self):
+        if self.config.proxy_enabled and self.config.proxy_host and self.config.proxy_port:
+            proxy_url = f"{self.config.proxy_host}:{self.config.proxy_port}"
+            self.options.add_argument(f'--proxy-server={proxy_url}')
+            print(f"[*] Proxy configurado: {proxy_url}")
+    
     def get_options(self):
-        # Retorna las opciones configuradas
         return self.options
 
 
 class SearchEngine:
-    # Maneja la logica de busqueda y descarga
-    
     def __init__(self, driver, wait, config, dirs):
         self.driver = driver
         self.wait = wait
         self.config = config
         self.dirs = dirs
-        self.debug_mode = False  # Activar para ver mas detalles
+        self.debug_mode = config.debug_mode
+        self.timings = config.timings
     
     def print_page_structure(self):
-        # Imprime la estructura de la pagina para debugging
         if not self.debug_mode:
             return
         
         try:
             print("\n   [DEBUG] Estructura de la pagina:")
-            
-            # Buscar contenedores de resultados
             containers = self.driver.find_elements(
                 By.CSS_SELECTOR,
                 ".search-results, .asset-entry, .document-entry, [class*='result']"
             )
-            
             print(f"   Contenedores encontrados: {len(containers)}")
-            
-            for i, container in enumerate(containers[:3]):  # Solo primeros 3
+            for i, container in enumerate(containers[:3]):
                 print(f"\n   Contenedor {i+1}:")
                 print(f"   HTML: {container.get_attribute('outerHTML')[:200]}...")
-                
-        except Exception as e:
+        except (NoSuchElementException, WebDriverException) as e:
             print(f"   [DEBUG] Error: {e}")
     
     def find_search_box(self):
-        # Encuentra la barra de busqueda en la pagina
         try:
             return self.wait.until(
                 EC.presence_of_element_located((By.ID, self.config.id_barra_busqueda))
             )
-        except:
+        except TimeoutException:
             try:
                 return self.wait.until(
                     EC.presence_of_element_located(
                         (By.CSS_SELECTOR, "input[type='text'][name*='keywords']")
                     )
                 )
-            except:
+            except TimeoutException:
                 return self.driver.find_element(By.CSS_SELECTOR, "input[type='text']")
     
     def search_term(self, termino):
-        # Realiza la busqueda de un termino
         search_box = self.find_search_box()
         search_box.clear()
-        time.sleep(0.3)
+        time.sleep(self.timings.short_wait)
         search_box.send_keys(termino)
-        time.sleep(0.3)
+        time.sleep(self.timings.short_wait)
         search_box.send_keys(Keys.RETURN)
-        time.sleep(3)
+        time.sleep(self.timings.medium_wait)
     
     def extract_result_info(self, element):
-        # Extrae informacion detallada de un elemento resultado
         info = {
             'texto': '',
             'titulo': '',
@@ -248,44 +284,37 @@ class SearchEngine:
         }
         
         try:
-            # Buscar el span.asset-entry-title asociado
             title_element = None
             if hasattr(element, 'title_element'):
                 title_element = element.title_element
             else:
                 try:
                     title_element = element.find_element(By.XPATH, "./ancestor::span[@class='asset-entry-title']")
-                except:
+                except NoSuchElementException:
                     try:
                         title_element = element.find_element(By.XPATH, "./parent::span[@class='asset-entry-title']")
-                    except:
+                    except NoSuchElementException:
                         pass
             
-            # Obtener titulo completo
             if title_element:
                 info['titulo'] = title_element.text.strip()
-                
-                # Contar highlights en el titulo
                 try:
                     highlights = title_element.find_elements(By.CSS_SELECTOR, "span.highlight")
                     info['highlights_count'] = len(highlights)
-                except:
+                except NoSuchElementException:
                     pass
             else:
                 info['titulo'] = element.text.strip()
             
             info['texto'] = info['titulo']
             
-            # Intentar obtener la descripcion (fuera del titulo)
             try:
-                # Buscar el contenedor padre que tiene la descripcion
                 parent = element.find_element(By.XPATH, "./ancestor::div[contains(@class, 'asset-entry')]")
                 desc_elem = parent.find_element(By.CSS_SELECTOR, ".asset-entry-content, .description")
                 info['descripcion'] = desc_elem.text.strip()[:100]
-            except:
+            except NoSuchElementException:
                 pass
             
-            # Obtener el href
             try:
                 info['href'] = element.get_attribute('href')
             except:
@@ -297,45 +326,36 @@ class SearchEngine:
         return info
     
     def find_results(self, termino):
-        # Encuentra los resultados de busqueda usando estructura HTML del portal
         resultados = []
         
-        # Debug opcional
         self.print_page_structure()
         
-        # Estrategia PRINCIPAL: Buscar por span.asset-entry-title y extraer enlaces
         try:
-            # Buscar TODOS los elementos con clase asset-entry-title
             title_elements = self.driver.find_elements(By.CSS_SELECTOR, "span.asset-entry-title")
             
             if title_elements:
                 for title_element in title_elements:
                     try:
-                        # Buscar el enlace <a> DENTRO del span.asset-entry-title
                         link = title_element.find_element(By.TAG_NAME, "a")
                         if link:
-                            # Guardar tanto el link como el elemento del titulo para analisis
-                            link.title_element = title_element  # Adjuntar referencia al titulo
+                            link.title_element = title_element
                             resultados.append(link)
-                    except:
+                    except NoSuchElementException:
                         try:
-                            # Fallback: buscar si el title_element mismo es clickeable
                             if title_element.get_attribute("href"):
                                 resultados.append(title_element)
                         except:
                             pass
                 
-        except Exception as e:
+        except NoSuchElementException:
             pass
         
-        # Estrategia 2: Buscar enlaces que contengan "Diagrama" o sean .xlsm
         if not resultados:
             resultados = self.driver.find_elements(By.PARTIAL_LINK_TEXT, "Diagrama")
         
         if not resultados:
             resultados = self.driver.find_elements(By.CSS_SELECTOR, "a[href$='.xlsm']")
         
-        # Estrategia 3: Buscar en la lista de documentos (estructura table-based)
         if not resultados:
             try:
                 doc_links = self.driver.find_elements(
@@ -344,10 +364,9 @@ class SearchEngine:
                 )
                 if doc_links:
                     resultados = doc_links
-            except:
+            except NoSuchElementException:
                 pass
         
-        # Estrategia 4: Busqueda por palabras clave del termino
         if not resultados:
             palabras_clave = termino.split()
             if len(palabras_clave) > 0:
@@ -357,7 +376,6 @@ class SearchEngine:
         return resultados
     
     def select_best_result(self, resultados, termino):
-        # Selecciona el mejor resultado usando coincidencia inteligente basada en highlights
         if not resultados:
             return None
         
@@ -370,21 +388,18 @@ class SearchEngine:
         
         for resultado in resultados:
             try:
-                # CLAVE: Obtener el elemento title asociado al enlace
                 title_element = None
                 if hasattr(resultado, 'title_element'):
                     title_element = resultado.title_element
                 else:
-                    # Intentar encontrar el span.asset-entry-title que contiene este enlace
                     try:
                         title_element = resultado.find_element(By.XPATH, "./ancestor::span[@class='asset-entry-title']")
-                    except:
+                    except NoSuchElementException:
                         try:
                             title_element = resultado.find_element(By.XPATH, "./parent::span[@class='asset-entry-title']")
-                        except:
+                        except NoSuchElementException:
                             pass
                 
-                # Obtener el texto completo del titulo (SIN recortar)
                 if title_element:
                     texto_resultado = title_element.text.strip()
                 else:
@@ -394,84 +409,75 @@ class SearchEngine:
                     continue
                 
                 texto_lower = texto_resultado.lower()
-                
-                # Inicializar score
                 score = 0
                 
-                # ===== SCORING PRINCIPAL =====
-                
-                # 1. CONTAR HIGHLIGHTS DENTRO DEL TITULO (MAXIMA PRIORIDAD)
                 num_highlights = 0
                 if title_element:
                     try:
                         highlights = title_element.find_elements(By.CSS_SELECTOR, "span.highlight")
                         num_highlights = len(highlights)
-                        score += num_highlights * 500  # 500 puntos por cada highlight
-                    except:
+                        score += num_highlights * 500
+                    except NoSuchElementException:
                         pass
                 
-                # 2. Coincidencia exacta del termino completo
                 if termino_lower in texto_lower:
                     score += 2000
                 
-                # 3. Contar palabras que coinciden
                 palabras_encontradas = 0
                 for palabra in palabras_termino:
                     if palabra in texto_lower:
                         score += 100
                         palabras_encontradas += 1
                 
-                # 4. Bonus si casi todas las palabras coinciden
                 porcentaje_coincidencia = palabras_encontradas / len(palabras_termino) if palabras_termino else 0
-                if porcentaje_coincidencia > 0.8:  # Mas del 80% de palabras coinciden
+                if porcentaje_coincidencia > 0.8:
                     score += 300
                 
-                # 5. Bonus si el texto empieza con alguna palabra del termino
                 for palabra in palabras_termino:
                     if texto_lower.startswith(palabra):
                         score += 50
                         break
                 
-                # 6. Bonus moderado si contiene "guia" o "diagrama"
                 if "guia" in texto_lower or "diagrama" in texto_lower:
                     score += 25
                 
-                # 7. Penalizar diferencias muy grandes de longitud
                 len_diff = abs(len(texto_lower) - len(termino_lower))
                 if len_diff > 100:
                     score -= 20
                 
-                # Actualizar mejor resultado (sin mostrar cada evaluacion)
                 if score > mejor_score:
                     mejor_score = score
                     mejor_resultado = resultado
                     mejor_titulo_completo = texto_resultado
                     
+            except StaleElementReferenceException:
+                print(f"   -> Elemento obsoleto, continuando...")
+                continue
             except Exception as e:
                 print(f"   -> Error evaluando resultado: {e}")
                 continue
         
         return mejor_resultado
     
-    def wait_for_download(self, snapshot_antes, timeout=45):
-        # Espera a que se complete la descarga
+    def wait_for_download(self, snapshot_antes, timeout=None):
+        if timeout is None:
+            timeout = self.timings.download_timeout
+            
         tiempo_inicio = time.time()
         archivo_final = None
         
         while (time.time() - tiempo_inicio) < timeout:
             try:
                 snapshot_ahora = self.dirs.get_files_snapshot()
-                
                 nuevos = set(snapshot_ahora.keys()) - set(snapshot_antes.keys())
-                
                 actualizados = []
+                
                 for filename, mtime in snapshot_ahora.items():
                     if filename in snapshot_antes:
                         if mtime > snapshot_antes[filename] + 0.5:
                             actualizados.append(filename)
                 
                 candidatos = list(nuevos) + actualizados
-                
                 candidato = next(
                     (f for f in candidatos if not f.endswith(('.crdownload', '.tmp', '.partial'))), 
                     None
@@ -479,30 +485,28 @@ class SearchEngine:
                 
                 if candidato:
                     archivo_final = os.path.join(self.dirs.download_dir, candidato)
-                    
                     size_prev = -1
+                    
                     for _ in range(5):
                         try:
                             size_curr = os.path.getsize(archivo_final)
                             if size_curr == size_prev and size_curr > 0:
                                 break
                             size_prev = size_curr
-                            time.sleep(0.5)
-                        except:
+                            time.sleep(self.timings.short_wait)
+                        except OSError:
                             pass
                     
                     return archivo_final
-            except Exception:
+            except OSError:
                 pass
             
-            time.sleep(2)
+            time.sleep(self.timings.medium_wait)
         
         return archivo_final
 
 
 class BotRPA:
-    # Clase principal que ejecuta el bot de automatizacion
-    
     def __init__(self, config, dirs, unlocker, chrome_options):
         self.config = config
         self.dirs = dirs
@@ -513,53 +517,64 @@ class BotRPA:
         self.search_engine = None
         
     def initialize_driver(self):
-        # Inicializa el navegador Chrome
         print("=" * 60)
-        print("   INICIANDO BOT RPA - MODO DESCARGA AUTOMATICA")
+        print(f"   INICIANDO BOT RPA v{VERSION} - MODO DESCARGA AUTOMATICA")
         print("=" * 60)
+        
+        UpdateChecker.check_for_updates()
+        
         print("\n[*] Configurando Chrome con permisos extendidos...")
         print(f"[*] Carpeta de descargas: {self.dirs.download_dir}")
         print("[*] Safe Browsing: DESACTIVADO")
-        print("[*] Proteccion de descargas: DESACTIVADA\n")
+        print("[*] Proteccion de descargas: DESACTIVADA")
+        
+        if self.config.debug_mode:
+            print("[*] Modo DEBUG: ACTIVADO")
+        
+        if self.config.proxy_enabled:
+            print(f"[*] Proxy: {self.config.proxy_host}:{self.config.proxy_port}")
+        
+        print()
         
         self.driver = webdriver.Chrome(options=self.chrome_options)
-        self.driver.set_page_load_timeout(180)
-        self.wait = WebDriverWait(self.driver, 20)
+        self.driver.set_page_load_timeout(self.config.timings.page_load_timeout)
+        self.wait = WebDriverWait(self.driver, self.config.timings.explicit_wait)
         self.search_engine = SearchEngine(self.driver, self.wait, self.config, self.dirs)
         
         self._configure_cdp()
     
     def _configure_cdp(self):
-        # Configura Chrome DevTools Protocol para descargas automaticas
         try:
             self.driver.execute_cdp_cmd("Browser.setDownloadBehavior", {
                 "behavior": "allow",
                 "downloadPath": self.dirs.download_dir
             })
             print("[OK] Chrome DevTools Protocol: Descargas automaticas habilitadas\n")
-        except Exception as e:
+        except WebDriverException as e:
             print(f"[!] Advertencia CDP: {e}\n")
     
     def safe_get(self, url, max_retries=3):
-        # Navega a una URL con reintentos
         for attempt in range(max_retries):
             try:
                 self.driver.get(url)
+                self.config.timings.apply_rate_limit()
                 return True
-            except Exception as e:
-                print(f"   [!] Error navegando a {url} (Intento {attempt + 1}/{max_retries}): {e}")
-                time.sleep(5)
+            except TimeoutException as e:
+                print(f"   [!] Timeout navegando a {url} (Intento {attempt + 1}/{max_retries}): {e}")
+                time.sleep(self.config.timings.retry_delay)
                 try:
                     self.driver.execute_script("window.stop();")
-                except:
+                except WebDriverException:
                     pass
+            except WebDriverException as e:
+                print(f"   [!] Error WebDriver: {e} (Intento {attempt + 1}/{max_retries})")
+                time.sleep(self.config.timings.retry_delay)
         return False
     
     def login(self):
-        # Realiza el proceso de login
         print(f"Accediendo al login: {self.config.url_login}")
         if not self.safe_get(self.config.url_login):
-            raise Exception("No se pudo acceder a la pagina de login tras varios intentos.")
+            raise WebDriverException("No se pudo acceder a la pagina de login tras varios intentos.")
         
         try:
             campo_user = self.wait.until(
@@ -574,70 +589,61 @@ class BotRPA:
             campo_pass.send_keys(self.config.clave)
             campo_pass.send_keys(Keys.RETURN)
             
-            time.sleep(5)
+            time.sleep(self.config.timings.long_wait)
             print("[OK] Login exitoso")
-        except Exception as e:
-            print(f"Alerta! Fallo el login automatico. Hazlo manual rapido. Error: {e}")
+        except TimeoutException as e:
+            print(f"Alerta! Timeout en login automatico. Error: {e}")
+            time.sleep(20)
+        except NoSuchElementException as e:
+            print(f"Alerta! No se encontraron campos de login. Error: {e}")
             time.sleep(20)
     
     def navigate_to_search(self):
-        # Navega al sitio de busqueda
         if not self.safe_get(self.config.url_buscador):
             print("   [!] Advertencia: Fallo carga inicial del buscador. Reintentando...")
-        time.sleep(3)
+        time.sleep(self.config.timings.medium_wait)
     
     def process_single_download(self, idx, termino):
-        # Procesa la descarga de un termino individual
         try:
             print(f"\n[{idx}/{len(self.config.lista_busqueda)}] Buscando: '{termino}'")
             
             if self.driver.current_url != self.config.url_buscador:
                 self.safe_get(self.config.url_buscador)
-                time.sleep(2)
+                time.sleep(self.config.timings.medium_wait)
             
-            # Realizar busqueda
             self.search_engine.search_term(termino)
-            
-            # Encontrar resultados
             resultados = self.search_engine.find_results(termino)
             
             if not resultados:
                 print(f"[X] Sin resultados")
                 self.safe_get(self.config.url_buscador)
-                time.sleep(1)
+                time.sleep(self.config.timings.short_wait)
                 return
             
             print(f"[OK] {len(resultados)} resultados encontrados")
-            
-            # Seleccionar mejor resultado
             mejor_resultado = self.search_engine.select_best_result(resultados, termino)
             
             if not mejor_resultado:
                 print("   [X] No se pudo seleccionar un resultado valido")
                 return
             
-            # Extraer informacion del resultado
             info = self.search_engine.extract_result_info(mejor_resultado)
-            
             titulo_corto = info.get('titulo', 'N/A')[:70] + '...' if len(info.get('titulo', '')) > 70 else info.get('titulo', 'N/A')
             print(f"[>>] Seleccionado: {titulo_corto}")
             
-            # Preparar descarga
             snapshot_antes = self.dirs.get_files_snapshot()
             
-            # Scroll y click
             self.driver.execute_script(
                 "arguments[0].scrollIntoView({behavior: 'smooth', block: 'center'});", 
                 mejor_resultado
             )
-            time.sleep(0.5)
+            time.sleep(self.config.timings.short_wait)
             
             try:
                 mejor_resultado.click()
-            except:
+            except ElementClickInterceptedException:
                 self.driver.execute_script("arguments[0].click();", mejor_resultado)
             
-            # Esperar descarga
             archivo_final = self.search_engine.wait_for_download(snapshot_antes)
             
             if archivo_final and os.path.exists(archivo_final):
@@ -650,27 +656,38 @@ class BotRPA:
                 print(f"[!] Error en descarga\n")
             
             self.safe_get(self.config.url_buscador)
-            time.sleep(2)
+            time.sleep(self.config.timings.medium_wait)
+            self.config.timings.apply_rate_limit()
                 
+        except TimeoutException as e:
+            print(f"   [ERROR] Timeout en '{termino}': {e}")
+            self._recover_session()
+        except StaleElementReferenceException as e:
+            print(f"   [ERROR] Elemento obsoleto en '{termino}': {e}")
+            self._recover_session()
+        except WebDriverException as e:
+            print(f"   [ERROR] WebDriver en '{termino}': {e}")
+            self._recover_session()
         except Exception as e:
-            print(f"   [ERROR] Excepcion en '{termino}': {e}")
-            print("   -> Intentando recuperar sesion...")
-            try:
-                self.driver.refresh()
-                time.sleep(3)
-                self.safe_get(self.config.url_buscador)
-                time.sleep(3)
-            except:
-                print("   [ERROR CRITICO] No se pudo recuperar la sesion")
-                raise
+            print(f"   [ERROR] Excepcion inesperada en '{termino}': {e}")
+            self._recover_session()
+    
+    def _recover_session(self):
+        print("   -> Intentando recuperar sesion...")
+        try:
+            self.driver.refresh()
+            time.sleep(self.config.timings.medium_wait)
+            self.safe_get(self.config.url_buscador)
+            time.sleep(self.config.timings.medium_wait)
+        except WebDriverException:
+            print("   [ERROR CRITICO] No se pudo recuperar la sesion")
+            raise
     
     def process_downloads(self):
-        # Procesa todas las descargas de la lista de busqueda
         for idx, termino in enumerate(self.config.lista_busqueda, 1):
             self.process_single_download(idx, termino)
     
     def logout(self):
-        # Cierra la sesion
         print("\n" + "=" * 60)
         print("   CERRANDO SESION")
         print("=" * 60)
@@ -686,22 +703,21 @@ class BotRPA:
                         print(f"   -> Click en '{text}'...")
                         links[0].click()
                         logout_found = True
-                        time.sleep(3)
+                        time.sleep(self.config.timings.medium_wait)
                         break
-                except:
+                except NoSuchElementException:
                     continue
             
             if not logout_found:
                 print("   -> Boton no encontrado, forzando logout por URL...")
                 self.safe_get("http://portaldeconocimiento.claro.com.pe/c/portal/logout")
-                time.sleep(2)
+                time.sleep(self.config.timings.medium_wait)
             
             print("   -> [OK] Sesion finalizada.")
         except Exception as e:
             print(f"   [!] Error al cerrar sesion: {e}")
     
     def cleanup(self):
-        # Limpia y cierra el navegador
         print("\n" + "=" * 60)
         print("   RESUMEN DEL PROCESO")
         print("=" * 60)
@@ -713,7 +729,7 @@ class BotRPA:
             ]
             print(f"   [OK] Archivos en carpeta Descargas: {len(archivos)}")
             print(f"   Ubicacion: {self.dirs.download_dir}")
-        except:
+        except OSError:
             pass
         
         print("=" * 60)
@@ -726,13 +742,14 @@ class BotRPA:
         print("   [OK] Proceso finalizado correctamente")
     
     def run(self):
-        # Ejecuta el proceso completo del bot
         try:
             self.initialize_driver()
             self.login()
             self.navigate_to_search()
             self.process_downloads()
             self.logout()
+        except KeyboardInterrupt:
+            print("\n[!] Proceso interrumpido por el usuario")
         except Exception as e:
             print(f"\n[ERROR GENERAL] {e}")
             import traceback
@@ -742,11 +759,10 @@ class BotRPA:
 
 
 def main():
-    # Funcion principal del script
     config = ConfigLoader()
     dirs = DirectoryManager()
     unlocker = FileUnlocker()
-    chrome_config = ChromeConfigurator(dirs.download_dir)
+    chrome_config = ChromeConfigurator(dirs.download_dir, config)
     
     bot = BotRPA(config, dirs, unlocker, chrome_config.get_options())
     bot.run()
