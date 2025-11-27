@@ -9,7 +9,7 @@ Configura los términos de búsqueda y deja que el sistema haga todo el trabajo.
 
 ---
 
-## 🎯 Guía Paso a Paso (Para Usuarios)
+## 🎯 Guía Paso a Paso - SOLO 3 PASOS! 
 
 ### 📥 **PASO 1: Descarga el Bot**
 
@@ -33,181 +33,162 @@ Configura los términos de búsqueda y deja que el sistema haga todo el trabajo.
 1. Ve a: https://github.com/ChampiP/bot-rpa
 2. Haz clic en el botón verde **"Code"**
 3. Selecciona **"Download ZIP"**
-4. Extrae el archivo ZIP **en tu Escritorio**
-5. Continúa al Paso 2
+4. Extrae el archivo ZIP **donde quieras** (Escritorio, Documentos, etc.)
 
 ---
 
-### ⚙️ **PASO 2: Instala el Bot (Primera Vez Solamente)**
+### ⚙️ **PASO 2: Instala el Bot (Solo una vez)**
 
-1. Ve a tu **Escritorio (Desktop)**
-2. Abre la carpeta `bot-rpa` (o `Bot_RPA_Claro`)
-3. Busca el archivo **`INSTALAR.bat`**
-4. Haz **doble clic** en él
-
-**🔄 ¿Qué hará el instalador?**
-
-- ✅ Verificará si tienes **Python** instalado
-- ✅ Si NO tienes Python, lo instalará automáticamente
-- ✅ Creará un entorno virtual
-- ✅ Instalará todas las dependencias necesarias
-- ✅ Copiará accesos directos a tu Escritorio
-
-**⏱️ Tiempo aproximado:** 2-5 minutos
-
-**⚠️ IMPORTANTE:** 
-- Si Python no está instalado, el script lo instalará con **winget**
-- Si la instalación automática falla, recibirás instrucciones claras
-- Es posible que necesites **reiniciar el instalador** después de instalar Python
-
----
-
-### 🔧 **PASO 3: Verifica que Todo Funcione (Opcional pero Recomendado)**
-
-1. Ve a tu **Escritorio**
-2. Busca el archivo **`VERIFICAR_PYTHON.bat`** (si lo copiaste)
-   - O ejecútalo desde la carpeta del bot
+1. Abre la carpeta donde descargaste el bot
+2. Busca el archivo **`INSTALAR.bat`**
 3. Haz **doble clic** en él
+4. **¡Espera a que termine!**
 
-**📊 Este script te mostrará:**
-- ✅ Si Python está instalado correctamente
-- ✅ Qué comandos de Python funcionan
-- ✅ Si hay problemas con el PATH
-- ✅ Recomendaciones específicas para tu caso
+**🔄 El instalador hará TODO automáticamente:**
 
-**Si todo está OK:** Continúa al Paso 4  
-**Si hay problemas:** Sigue las recomendaciones que muestra el script
+- ✅ Detectará si tienes Python (si no, lo instalará)
+- ✅ Creará el entorno virtual
+- ✅ Instalará todas las dependencias
+- ✅ **Copiará `BOT_RPA_CLARO.bat` a tu Escritorio**
+
+**⏱️ Tiempo:** 2-5 minutos
+
+**✨ Al terminar verás:**
+```
+============================================================
+   INSTALACION COMPLETADA EXITOSAMENTE
+============================================================
+
+[OK] El bot esta listo para usar
+
+PROXIMO PASO:
+  Ve a tu ESCRITORIO y ejecuta:
+  ==> BOT_RPA_CLARO.bat
+```
 
 ---
 
-### 🎮 **PASO 4: Configura tus Credenciales**
+### 🚀 **PASO 3: Usa el Bot** 
 
-1. Ve a tu **Escritorio**
-2. Busca el archivo **`EJECUTAR_BOT.bat`**
-3. Haz **doble clic** en él
-4. Se abrirá una **ventana con pestañas**
+**📍 Desde tu ESCRITORIO:**
 
-**📝 En la pestaña "Ajustes":**
-1. Ingresa tu **Usuario** del portal Claro
-2. Ingresa tu **Contraseña**
+1. Busca el archivo **`BOT_RPA_CLARO.bat`** 
+2. Haz **doble clic** en él
+3. Selecciona **opción 1** (Interfaz Gráfica)
+
+**🔧 Primera vez - Configura tus credenciales:**
+1. Ve a la pestaña **"Ajustes"**
+2. Ingresa tu usuario y contraseña del portal Claro
 3. Haz clic en **"Guardar Configuración"**
 
-✅ **Listo:** Tus credenciales están guardadas (solo en tu computadora)
+**🔍 (Opcional) Configura qué descargar:**
+1. Ve a la pestaña **"Términos"**
+2. Agrega, edita o elimina términos de búsqueda
+3. Haz clic en **"Guardar"**
 
----
-
-### 🔍 **PASO 5: Configura los Términos de Búsqueda (Opcional)**
-
-**🎯 ¿Qué quieres descargar?**
-
-**Opción 1: Desde la Interfaz Gráfica**
-1. En la ventana del bot, ve a la pestaña **"Términos"**
-2. Verás una lista de términos de búsqueda
-3. Agrega, edita o elimina términos
-4. Haz clic en **"Guardar"**
-
-**Opción 2: Editando el Archivo**
-1. Ve a la carpeta `config`
-2. Abre el archivo `terms.json` con el Bloc de notas
-3. Edita los términos siguiendo este formato:
-   ```json
-   {
-     "lista_busqueda": [
-       "Migracion de plan",
-       "Guia de cuestionamiento",
-       "Bloqueo de linea"
-     ]
-   }
-   ```
-4. Guarda el archivo
-
----
-
-### 🚀 **PASO 6: Ejecuta el Bot**
-
-1. En la ventana del bot, ve a la pestaña **"Ejecutar"**
+**▶️ Ejecuta el bot:**
+1. Ve a la pestaña **"Ejecutar"**
 2. Haz clic en **"INICIAR DESCARGA AUTOMÁTICA 🚀"**
-3. Se abrirá un navegador Chrome automáticamente
-4. **NO CIERRES EL NAVEGADOR** mientras el bot trabaja
+3. ¡Listo! El bot trabajará solo
 
-**🤖 El bot hará automáticamente:**
-- Iniciará sesión con tus credenciales
-- Buscará cada término que configuraste
-- Descargará los diagramas encontrados
-- Cerrará el navegador al terminar
-
-**⏱️ Tiempo:** Depende de cuántos términos y archivos haya (5-20 minutos aprox.)
+**⏱️ Tiempo:** Varía según cuántos documentos busque (5-20 min aprox.)
 
 ---
 
-### 📁 **PASO 7: Revisa tus Archivos Descargados**
+### 📁 **Tus archivos descargados estarán en:**
 
-Los archivos se guardan en:
 ```
 C:\Users\TU_USUARIO\Downloads
 ```
 
-O simplemente abre tu carpeta de **Descargas**
+---
+
+## 🔄 Uso Diario (Después de Instalado)
+
+**Es súper fácil:**
+
+1. **Doble clic** en `BOT_RPA_CLARO.bat` (desde tu Escritorio)
+2. Opción **1** → Interfaz Gráfica
+3. Pestaña **"Ejecutar"** → Botón **"INICIAR 🚀"**
+4. ¡Eso es todo!
 
 ---
 
-## ⚠️ ¿Tienes Problemas? Soluciones Rápidas
+## ⚠️ ¿Tienes Problemas? - El Bot se Auto-Repara! 🔧
 
-### 🔴 **Problema 1: "Python no encontrado"**
+### ✨ **Auto-Reparación Inteligente**
 
-**Solución Automática:**
-- El instalador intentará instalar Python automáticamente
-- Si falla, verás instrucciones claras en pantalla
+**El bot ahora se auto-diagnostica y auto-repara:**
 
-**Solución Manual:**
-1. Ve a: https://www.python.org/downloads/
-2. Descarga **Python 3.11** o superior
-3. Durante la instalación, **MARCA LA CASILLA "Add Python to PATH"** ✅
-4. Completa la instalación
-5. **Reinicia tu computadora**
-6. Ejecuta `INSTALAR.bat` nuevamente
+Cuando ejecutas `BOT_RPA_CLARO.bat`, el bot automáticamente:
+- ✅ Verifica que Python esté instalado
+- ✅ Verifica que el entorno virtual exista
+- ✅ Verifica que todos los archivos estén presentes
+- ✅ **Si detecta problemas, te ofrece repararlos automáticamente**
 
-**Verificación:**
-- Ejecuta `VERIFICAR_PYTHON.bat` para confirmar que Python funciona
+**Si ves este mensaje:**
+```
+============================================================
+   SE DETECTARON PROBLEMAS
+============================================================
+
+[1] Auto-reparar ahora (Recomendado)
+[2] Salir y hacerlo manualmente
+```
+
+**¡Simplemente presiona `1` y el bot se reparará solo!**
 
 ---
 
-### 🔴 **Problema 2: "Error instalando dependencias"**
+### 🔴 **Problemas Comunes (con soluciones rápidas)**
+
+#### **Problema 1: "Python no encontrado"**
 
 **Solución:**
-1. Cierra todas las ventanas del bot
-2. Ejecuta `INSTALAR.bat` nuevamente
-3. Si persiste, reinicia tu computadora
-4. Ejecuta `INSTALAR.bat` una vez más
+1. Ejecuta `INSTALAR.bat` - intentará instalar Python automáticamente
+2. Si falla, ejecuta `VERIFICAR_PYTHON.bat` para ver diagnóstico
+3. Instalación manual: https://www.python.org/downloads/
+   - **IMPORTANTE:** Marca "Add Python to PATH" ✅
+   - Reinicia tu PC después de instalar
 
 ---
 
-### 🔴 **Problema 3: "No se puede acceder al portal"**
+#### **Problema 2: "No se encuentra el bot"**
+
+**Causa:** El `.bat` del escritorio no sabe dónde está la carpeta del bot
 
 **Solución:**
-1. Verifica tu **conexión a internet**
-2. Revisa tus **credenciales** en la pestaña "Ajustes"
-3. Intenta acceder manualmente al portal desde tu navegador
-4. Verifica que no hay mantenimiento en el portal
+1. Ejecuta `INSTALAR.bat` desde la carpeta del bot
+2. Esto actualizará la ubicación automáticamente
+3. El `.bat` del escritorio funcionará correctamente
 
 ---
 
-### 🔴 **Problema 4: "El bot se detiene o congela"**
+#### **Problema 3: "Error al ejecutar"**
 
-**Solución:**
-1. Cierra el navegador Chrome
-2. Cierra la ventana del bot
-3. Ejecuta `EJECUTAR_BOT.bat` nuevamente
-4. Si persiste, reinicia tu computadora
+**Solución Rápida:**
+1. Ejecuta `BOT_RPA_CLARO.bat` desde el Escritorio
+2. Si el bot detecta problemas, presiona **`1`** para auto-reparar
+3. Si persiste, ejecuta `INSTALAR.bat` desde la carpeta del bot
 
 ---
 
-### 🔴 **Problema 5: "Entorno virtual no configurado"**
+#### **Problema 4: "No se puede acceder al portal"**
 
 **Solución:**
-1. Ejecuta `INSTALAR.bat` nuevamente
-2. Espera a que termine completamente
-3. Si ves errores, anótalos y ejecuta `VERIFICAR_PYTHON.bat`
+- ✅ Verifica tu internet
+- ✅ Revisa credenciales (pestaña "Ajustes")
+- ✅ Intenta acceder manualmente al portal
+- ✅ Verifica que no hay mantenimiento
+
+---
+
+#### **Problema 5: "El bot se congela"**
+
+**Solución:**
+1. Cierra Chrome y el bot
+2. Ejecuta `BOT_RPA_CLARO.bat` nuevamente
+3. El bot reiniciará limpiamente
 
 ---
 
@@ -270,18 +251,6 @@ Ejemplo:
   ]
 }
 ```
-
----
-
-## 🔄 Uso Diario (Después de Instalado)
-
-**¿Cada vez que quieras usar el bot?**
-
-1. **Doble clic** en `EJECUTAR_BOT.bat` (desde el Escritorio)
-2. Selecciona **opción 1** (Interfaz Gráfica)
-3. Ve a la pestaña **"Ejecutar"**
-4. Haz clic en **"INICIAR DESCARGA AUTOMÁTICA 🚀"**
-5. ¡Listo! El bot trabajará solo
 
 ---
 

@@ -1,56 +1,175 @@
 @echo off
-title BOT RPA CLARO
+title BOT RPA CLARO - INICIO INTELIGENTE
 color 0B
 cls
 
-:: Verificar que Python esta disponible
+:: ===========================================================
+:: PASO 1: DETECTAR LA UBICACION DEL BOT
+:: ===========================================================
+
+:: Si este .bat esta en el escritorio, buscar la carpeta del bot
+set "BOT_DIR=%~dp0"
+
+:: Si hay un archivo de configuracion que indica donde esta el bot, usarlo
+if exist "%USERPROFILE%\.bot-rpa-location.txt" (
+    set /p BOT_DIR=<"%USERPROFILE%\.bot-rpa-location.txt"
+    if exist "!BOT_DIR!\gui.py" (
+        cd /d "!BOT_DIR!"
+    )
+)
+
+:: Verificar si estamos en la carpeta correcta del bot
+if not exist "gui.py" (
+    if not exist "index.py" (
+        echo ============================================================
+        echo    ERROR: No se encuentra el bot
+        echo ============================================================
+        echo.
+        echo [!] Este script no puede encontrar los archivos del bot
+        echo.
+        echo SOLUCIONES:
+        echo 1. Ejecuta este archivo desde la carpeta del bot
+        echo 2. O ejecuta INSTALAR.bat de nuevo
+        echo.
+        echo Ruta actual: %CD%
+        echo.
+        pause
+        exit /b 1
+    )
+)
+
+:: ===========================================================
+:: PASO 2: AUTO-VALIDACION Y REPARACION
+:: ===========================================================
+
+echo ============================================================
+echo    BOT RPA CLARO - VERIFICACION AUTOMATICA
+echo ============================================================
+echo.
+echo [*] Verificando configuracion...
+echo.
+
+set NEED_INSTALL=0
+set ERROR_MSGS=
+
+:: Verificar Python
 set PYTHON_FOUND=0
+set PYTHON_CMD=
 
 python --version >nul 2>&1
-if %errorlevel% equ 0 set PYTHON_FOUND=1
-
-py --version >nul 2>&1
-if %errorlevel% equ 0 set PYTHON_FOUND=1
-
-python3 --version >nul 2>&1
-if %errorlevel% equ 0 set PYTHON_FOUND=1
+if %errorlevel% equ 0 (
+    set PYTHON_FOUND=1
+    set PYTHON_CMD=python
+)
 
 if %PYTHON_FOUND% equ 0 (
-    echo ============================================================
-    echo    ERROR: Python no instalado
-    echo ============================================================
-    echo.
-    echo [!] Python no esta instalado o no esta en el PATH
-    echo [!] Por favor ejecuta "INSTALAR.bat" primero
-    echo.
-    pause
-    exit /b 1
+    py --version >nul 2>&1
+    if %errorlevel% equ 0 (
+        set PYTHON_FOUND=1
+        set PYTHON_CMD=py
+    )
 )
 
-:: Activar entorno virtual
+if %PYTHON_FOUND% equ 0 (
+    python3 --version >nul 2>&1
+    if %errorlevel% equ 0 (
+        set PYTHON_FOUND=1
+        set PYTHON_CMD=python3
+    )
+)
+
+if %PYTHON_FOUND% equ 0 (
+    echo [X] Python no encontrado
+    set NEED_INSTALL=1
+    set ERROR_MSGS=%ERROR_MSGS% Python
+) else (
+    echo [OK] Python detectado
+)
+
+:: Verificar entorno virtual
 if not exist ".venv" (
-    echo ============================================================
-    echo    ERROR: Entorno no configurado
-    echo ============================================================
-    echo.
-    echo [!] El entorno virtual no existe
-    echo [!] Por favor ejecuta "INSTALAR.bat" primero
-    echo.
-    pause
-    exit /b 1
+    echo [X] Entorno virtual no existe
+    set NEED_INSTALL=1
+    set ERROR_MSGS=%ERROR_MSGS% Entorno-Virtual
+) else (
+    if not exist ".venv\Scripts\activate.bat" (
+        echo [X] Entorno virtual corrupto
+        set NEED_INSTALL=1
+        set ERROR_MSGS=%ERROR_MSGS% Entorno-Corrupto
+    ) else (
+        echo [OK] Entorno virtual OK
+    )
 )
 
-if not exist ".venv\Scripts\activate.bat" (
-    echo ============================================================
-    echo    ERROR: Entorno virtual corrupto
-    echo ============================================================
-    echo.
-    echo [!] El entorno virtual esta danado
-    echo [!] Por favor ejecuta "INSTALAR.bat" nuevamente
-    echo.
-    pause
-    exit /b 1
+:: Verificar archivos principales
+if not exist "gui.py" (
+    echo [X] Falta gui.py
+    set NEED_INSTALL=1
 )
+
+if not exist "index.py" (
+    echo [X] Falta index.py
+    set NEED_INSTALL=1
+)
+
+if not exist "requirements.txt" (
+    echo [X] Falta requirements.txt
+    set NEED_INSTALL=1
+)
+
+:: Si hay problemas, ofrecer auto-reparacion
+if %NEED_INSTALL% equ 1 (
+    echo.
+    echo ============================================================
+    echo    SE DETECTARON PROBLEMAS
+    echo ============================================================
+    echo.
+    echo Problemas encontrados: %ERROR_MSGS%
+    echo.
+    echo El bot necesita ser instalado/reparado.
+    echo.
+    echo [1] Auto-reparar ahora (Recomendado)
+    echo [2] Salir y hacerlo manualmente
+    echo.
+    set /p repair_choice="Selecciona [1/2]: "
+    
+    if "!repair_choice!"=="1" (
+        echo.
+        echo [*] Iniciando auto-reparacion...
+        echo.
+        
+        if exist "INSTALAR.bat" (
+            call INSTALAR.bat
+            
+            echo.
+            echo [*] Reparacion completada, reiniciando bot...
+            timeout /t 3 >nul
+            
+            :: Reiniciar este script
+            start "" "%~f0"
+            exit /b 0
+        ) else (
+            echo [X] No se encuentra INSTALAR.bat
+            echo [!] Por favor descarga el bot nuevamente
+            pause
+            exit /b 1
+        )
+    ) else (
+        echo.
+        echo [!] Por favor ejecuta INSTALAR.bat manualmente
+        pause
+        exit /b 1
+    )
+)
+
+echo.
+echo [OK] Todas las verificaciones pasaron
+echo.
+timeout /t 2 >nul
+
+:: ===========================================================
+:: PASO 3: ACTIVAR ENTORNO Y MOSTRAR MENU
+:: ===========================================================
 
 call .venv\Scripts\activate.bat
 
@@ -84,7 +203,7 @@ echo ============================================================
 echo    ABRIENDO INTERFAZ GRAFICA...
 echo ============================================================
 echo.
-python gui.py
+%PYTHON_CMD% gui.py
 goto MENU
 
 :CONSOLA
@@ -93,7 +212,7 @@ echo ============================================================
 echo    EJECUTANDO BOT EN MODO CONSOLA
 echo ============================================================
 echo.
-python index.py
+%PYTHON_CMD% index.py
 echo.
 echo ============================================================
 echo    PROCESO FINALIZADO

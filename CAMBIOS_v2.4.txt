@@ -1,0 +1,115 @@
+================================================================================
+    CAMBIOS VERSION 2.4 - NOVIEMBRE 2025
+================================================================================
+
+MEJORAS PRINCIPALES:
+================================================================================
+
+1. SIMPLIFICACION EXTREMA - SOLO 1 ARCHIVO PARA EL USUARIO
+   - Antes: INSTALAR.bat, EJECUTAR_BOT.bat, VALIDAR_BOT.bat, DEMO_BOT.bat
+   - Ahora: Solo BOT_RPA_CLARO.bat en el Escritorio
+   - El resto se maneja automaticamente
+
+2. AUTO-REPARACION INTELIGENTE
+   - El bot se auto-diagnostica cada vez que se ejecuta
+   - Detecta problemas (Python, entorno virtual, archivos faltantes)
+   - Ofrece reparacion automatica con un solo clic
+   - No mas errores confusos
+
+3. DETECCION AUTOMATICA DE UBICACION
+   - El instalador guarda donde esta la carpeta del bot
+   - Los .bat del Escritorio encuentran el bot automaticamente
+   - No importa donde descargues/extraigas el bot
+   - Funciona desde cualquier ubicacion
+
+4. INSTALACION MEJORADA DE PYTHON
+   - Detecta Python de multiples formas (python, py, python3)
+   - Instalacion automatica mejorada con winget
+   - Mejor manejo de errores
+   - Instrucciones claras si falla
+
+5. MENOS ARCHIVOS, MENOS CONFUSION
+   - Eliminados: DEMO_BOT.bat, VALIDAR_BOT.bat
+   - Sus funciones integradas en EJECUTAR_BOT.bat
+   - Usuarios finales solo ven: BOT_RPA_CLARO.bat
+
+================================================================================
+FLUJO DE USUARIO SIMPLIFICADO:
+================================================================================
+
+ANTES (5-7 pasos):
+   1. Descargar
+   2. Extraer en lugar especifico
+   3. Ejecutar INSTALAR.bat
+   4. Buscar EJECUTAR_BOT.bat
+   5. Ejecutar VALIDAR_BOT.bat si hay problemas
+   6. No saber cual .bat usar
+   7. Confundirse con errores
+
+AHORA (3 pasos):
+   1. Descargar y extraer DONDE QUIERAS
+   2. Ejecutar INSTALAR.bat (una sola vez)
+   3. Usar BOT_RPA_CLARO.bat desde el Escritorio (siempre)
+
+   Si hay problemas -> El bot se auto-repara solo!
+
+================================================================================
+CAMBIOS TECNICOS:
+================================================================================
+
+EJECUTAR_BOT.bat:
+- Detecta su propia ubicacion
+- Lee archivo .bot-rpa-location.txt para encontrar el bot
+- Valida Python (python, py, python3)
+- Valida entorno virtual y archivos
+- Ofrece auto-reparacion si detecta problemas
+- Llama a INSTALAR.bat automaticamente si es necesario
+
+INSTALAR.bat:
+- Guarda ubicacion en %USERPROFILE%\.bot-rpa-location.txt
+- Copia EJECUTAR_BOT.bat al Escritorio como BOT_RPA_CLARO.bat
+- Mejor deteccion de Python
+- Actualizacion automatica del PATH
+- Soporte para reinstalacion sin problemas
+
+VERIFICAR_PYTHON.bat:
+- Mantiene su funcion de diagnostico avanzado
+- Util para casos especiales
+- Referenciado en documentacion
+
+Eliminados:
+- DEMO_BOT.bat (ya no necesario)
+- VALIDAR_BOT.bat (funciones integradas en EJECUTAR_BOT.bat)
+
+================================================================================
+BENEFICIOS PARA EL USUARIO:
+================================================================================
+
+✅ Menos pasos para instalar (de 7 a 3)
+✅ Un solo archivo para ejecutar siempre
+✅ Auto-reparacion sin conocimientos tecnicos
+✅ Funciona desde cualquier ubicacion
+✅ Menos confusion con multiples .bat
+✅ Experiencia mas profesional y pulida
+✅ Mejor manejo de errores con soluciones claras
+
+================================================================================
+COMPATIBILIDAD:
+================================================================================
+
+- Windows 10/11 (totalmente compatible)
+- Windows 7/8 (compatible con instalacion manual de Python)
+- Python 3.11+ (se instala automaticamente)
+- Funciona con winget o sin winget
+
+================================================================================
+DOCUMENTACION ACTUALIZADA:
+================================================================================
+
+- README.md: Reescrito con solo 3 pasos
+- LEEME.txt: Simplificado y actualizado
+- Nuevas secciones de auto-reparacion
+- FAQ expandido
+- Guias mas claras y directas
+
+================================================================================

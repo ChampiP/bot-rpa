@@ -10,28 +10,35 @@ OPCION 1 - Instalacion con un comando (PowerShell, NO necesita Administrador):
    irm https://raw.githubusercontent.com/ChampiP/bot-rpa/main/INSTALAR_DESDE_GITHUB.bat -outfile install.bat; .\install.bat
    
    * Se instala en: Desktop\Bot_RPA_Claro
-   * Los .bat se copian al Escritorio automaticamente
+   * Crea BOT_RPA_CLARO.bat en tu Escritorio automaticamente
 
 OPCION 2 - Descarga manual:
    1. Ve a: https://github.com/ChampiP/bot-rpa
    2. Click en "Code" -> "Download ZIP"
-   3. Extrae los archivos EN TU ESCRITORIO (Desktop)
+   3. Extrae los archivos DONDE QUIERAS (Escritorio, Documentos, etc.)
    4. Continua con las instrucciones de abajo
 
 ================================================================================
 
-INSTRUCCIONES DE USO (SUPER FACIL):
+INSTRUCCIONES DE USO - SOLO 3 PASOS!
 
-1. PRIMERA VEZ - INSTALAR:
+PASO 1 - INSTALAR (solo la primera vez):
+   - Ve a la carpeta donde descargaste el bot
    - Haz doble clic en "INSTALAR.bat"
-   - Espera a que termine (instala todo automaticamente)
-   - Listo! Ya esta configurado
+   - Espera a que termine (2-5 minutos)
+   - Al finalizar, tendra "BOT_RPA_CLARO.bat" en tu ESCRITORIO
 
-2. CADA VEZ QUE USES EL BOT:
-   - Haz doble clic en "EJECUTAR_BOT.bat"
+PASO 2 - CONFIGURAR (solo la primera vez):
+   - En tu ESCRITORIO, doble clic en "BOT_RPA_CLARO.bat"
    - Selecciona opcion 1 (Interfaz Grafica)
-   - Configura tu usuario y contraseña
-   - Dale clic a "Ejecutar Bot"
+   - Ve a pestana "Ajustes"
+   - Ingresa tu usuario y contrasena
+   - Click en "Guardar Configuracion"
+
+PASO 3 - USAR EL BOT (cada vez que lo necesites):
+   - Doble clic en "BOT_RPA_CLARO.bat" (desde tu Escritorio)
+   - Opcion 1 -> Interfaz Grafica
+   - Pestana "Ejecutar" -> "INICIAR DESCARGA AUTOMATICA"
    - El bot hara todo solo!
 
 ================================================================================
@@ -45,18 +52,35 @@ IMPORTANTE:
 - Python se instala automaticamente si no lo tienes
 
 ================================================================================
+EL BOT SE AUTO-REPARA!
+================================================================================
+
+NUEVO: El bot ahora tiene auto-reparacion inteligente!
+
+Cuando ejecutas "BOT_RPA_CLARO.bat", el bot automaticamente:
+- Verifica que Python este instalado
+- Verifica que el entorno virtual exista
+- Verifica que todos los archivos esten presentes
+- Si detecta problemas, te ofrece REPARARLOS AUTOMATICAMENTE
+
+Si ves este mensaje:
+   "SE DETECTARON PROBLEMAS"
+   [1] Auto-reparar ahora (Recomendado)
+   [2] Salir y hacerlo manualmente
+
+Simplemente presiona "1" y el bot se reparara solo!
+
+================================================================================
 PROBLEMAS CON PYTHON?
 ================================================================================
 
 Si tienes problemas con la instalacion de Python:
 
 1. Ejecuta "VERIFICAR_PYTHON.bat" para diagnosticar el problema
-2. Si Python no se instalo, el INSTALAR.bat te guiara paso a paso
-3. Asegurate de marcar "Add Python to PATH" en la instalacion manual
-4. Si ya tienes Python instalado pero no funciona, reinicia tu PC
-
-NOTA: El instalador intentara instalar Python automaticamente usando winget.
-      Si no funciona, te dara instrucciones claras para hacerlo manualmente.
+2. El INSTALAR.bat intentara instalar Python automaticamente
+3. Si falla, te dara instrucciones claras paso a paso
+4. Importante: Marca "Add Python to PATH" en instalacion manual
+5. Reinicia tu PC despues de instalar Python
 
 ================================================================================
 SOPORTE:
@@ -71,16 +95,31 @@ Si tienes problemas:
 6. Contacta al administrador del sistema
 
 ================================================================================
-ARCHIVOS DEL PAQUETE:
+ARCHIVOS DEL PAQUETE (SIMPLIFICADO):
 ================================================================================
 
-INSTALAR.bat         -> Ejecuta esto la primera vez
-EJECUTAR_BOT.bat     -> Usa esto cada vez que quieras usar el bot
-VALIDAR_BOT.bat      -> Verifica que todo funcione correctamente
-VERIFICAR_PYTHON.bat -> Diagnostica problemas con Python (NUEVO)
-LEEME.txt            -> Este archivo
-index.py             -> Codigo principal (no tocar)
-gui.py               -> Interfaz grafica (no tocar)
-requirements.txt     -> Lista de dependencias (no tocar)
+ARCHIVOS QUE SI USARAS:
+   INSTALAR.bat            -> Ejecuta esto la primera vez o para reparar
+   BOT_RPA_CLARO.bat       -> Aparece en tu ESCRITORIO, usalo siempre
+   VERIFICAR_PYTHON.bat    -> Diagnostica problemas con Python
+
+ARCHIVOS DEL SISTEMA (NO TOCAR):
+   index.py                -> Codigo principal del bot
+   gui.py                  -> Interfaz grafica
+   requirements.txt        -> Lista de dependencias
+   .venv/                  -> Carpeta del entorno virtual
+
+================================================================================
+POR QUE ES MAS FACIL AHORA?
+================================================================================
+
+ANTES: Tenias que ejecutar varios .bat desde diferentes lugares
+AHORA: Solo usas BOT_RPA_CLARO.bat desde tu Escritorio
+
+ANTES: Si habia problemas, no sabias que hacer
+AHORA: El bot se auto-diagnostica y auto-repara
+
+ANTES: Los .bat del escritorio no sabian donde estaba la carpeta
+AHORA: El instalador guarda la ubicacion automaticamente
 
 ================================================================================

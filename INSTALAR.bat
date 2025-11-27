@@ -215,15 +215,20 @@ if not exist "config\terms.json" (
 echo [OK] Configuracion completada
 
 echo.
-echo [*] Copiando accesos directos al Escritorio...
+echo [*] Configurando accesos directos...
 echo ------------------------------------------------------------
 
-:: Copiar .bat al Desktop para facil acceso
-copy /Y "EJECUTAR_BOT.bat" "%USERPROFILE%\Desktop\" >nul 2>&1
-copy /Y "VALIDAR_BOT.bat" "%USERPROFILE%\Desktop\" >nul 2>&1
-copy /Y "SUBIR_A_GITHUB.bat" "%USERPROFILE%\Desktop\" >nul 2>&1
+:: Guardar la ubicacion del bot para que EJECUTAR_BOT.bat la encuentre
+echo %CD%> "%USERPROFILE%\.bot-rpa-location.txt"
 
-echo [OK] Accesos directos creados en el Escritorio
+:: Copiar solo EJECUTAR_BOT.bat al Desktop
+copy /Y "EJECUTAR_BOT.bat" "%USERPROFILE%\Desktop\BOT_RPA_CLARO.bat" >nul 2>&1
+
+if %errorlevel% equ 0 (
+    echo [OK] Acceso directo creado: BOT_RPA_CLARO.bat en el Escritorio
+) else (
+    echo [!] No se pudo copiar al Escritorio, pero puedes ejecutar desde aqui
+)
 
 echo.
 echo ============================================================
@@ -231,11 +236,16 @@ echo    INSTALACION COMPLETADA EXITOSAMENTE
 echo ============================================================
 echo.
 echo [OK] El bot esta listo para usar
-echo [OK] Accesos directos en el Escritorio (Desktop)
 echo.
 echo PROXIMO PASO:
-echo - Ve a tu Escritorio y ejecuta "EJECUTAR_BOT.bat"
-echo - Se abrira una interfaz grafica simple
+echo.
+echo   Ve a tu ESCRITORIO y ejecuta:
+echo   ==^> BOT_RPA_CLARO.bat
+echo.
+echo   O desde esta carpeta:
+echo   ==^> EJECUTAR_BOT.bat
+echo.
+echo [*] El bot se auto-validara cada vez que lo ejecutes
 echo.
 echo Presiona cualquier tecla para cerrar...
 pause >nul
