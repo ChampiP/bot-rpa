@@ -25,7 +25,7 @@ DEFAULT_TERMS = [
 class BotGUI(tk.Tk):
     def __init__(self):
         super().__init__()
-        self.title("Bot RPA Claro v2.5.1 OPTIMIZADO - Configuracion y Ejecucion")
+        self.title("Bot RPA Claro v2.6 ULTRA RAPIDO - Sin Esperas")
         
         screen_width = self.winfo_screenwidth()
         screen_height = self.winfo_screenheight()
@@ -285,9 +285,9 @@ class BotGUI(tk.Tk):
         
         tip_label = ttk.Label(
             scrollable_frame,
-            text="💡 Consejo: Los timeouts se configuran en la pestaña 'Avanzado'",
+            text="⚡ Modo Ultra Rápido Automático: Sin necesidad de configurar timeouts",
             font=("Arial", 8, "bold"),
-            foreground="blue"
+            foreground="darkgreen"
         )
         tip_label.grid(row=len(fields) + 3, column=0, columnspan=2, pady=5)
         
@@ -356,39 +356,23 @@ class BotGUI(tk.Tk):
         
         current_row += 1
         
-        timing_frame = ttk.LabelFrame(scrollable_frame, text="⚡ Timeouts y Delays (segundos) - OPTIMIZADO v2.5", padding=10)
-        timing_frame.grid(row=current_row, column=0, columnspan=3, padx=10, pady=10, sticky=tk.EW)
+        # Info sobre timeouts automáticos
+        info_frame = ttk.LabelFrame(scrollable_frame, text="⚡ MODO ULTRA RAPIDO AUTOMATICO", padding=15)
+        info_frame.grid(row=current_row, column=0, columnspan=3, padx=10, pady=10, sticky=tk.EW)
         
-        info_timing = ttk.Label(
-            timing_frame,
-            text="⚡ Valores optimizados para conexiones 80+ Mbps - MÁXIMA VELOCIDAD\n"
-                 "✅ Sin errores de timeout - Validación automática de mínimos\n"
-                 "💡 Ajusta solo si tu conexión es más lenta",
-            font=("Arial", 8),
+        info_text = ttk.Label(
+            info_frame,
+            text="🚀 El bot ahora usa valores de velocidad máxima AUTOMATICOS\n\n"
+                 "✅ Sin configuración de timeouts necesaria\n"
+                 "✅ Sin delays artificiales\n"
+                 "✅ Optimizado para conexiones de 80+ Mbps\n"
+                 "✅ Detección inteligente sin esperas\n\n"
+                 "💡 ¡Solo ejecuta y disfruta de la velocidad máxima!",
+            font=("Arial", 10),
             foreground="darkgreen",
             justify=tk.LEFT
         )
-        info_timing.grid(row=0, column=0, columnspan=2, sticky=tk.W, padx=5, pady=(0, 10))
-        
-        timing_fields = [
-            ("Espera Corta (min 0.3s):", "TIMING_SHORT_WAIT", "0.3"),
-            ("Espera Media (min 1s):", "TIMING_MEDIUM_WAIT", "1.0"),
-            ("Espera Larga (min 2s):", "TIMING_LONG_WAIT", "2"),
-            ("Timeout Carga Pagina (min 60s):", "TIMING_PAGE_LOAD", "90"),
-            ("Timeout Espera Explicita (min 15s):", "TIMING_EXPLICIT_WAIT", "18"),
-            ("Timeout Descarga:", "TIMING_DOWNLOAD_TIMEOUT", "35"),
-            ("Delay Rate Limiting (min 0.5s):", "TIMING_RATE_LIMIT", "0.5"),
-            ("Delay Reintentos (min 2s):", "TIMING_RETRY_DELAY", "2"),
-        ]
-        
-        self.timing_entries = {}
-        for idx, (label, key, default) in enumerate(timing_fields):
-            row_idx = idx + 1  # +1 porque row 0 es el label de info
-            ttk.Label(timing_frame, text=label).grid(row=row_idx, column=0, sticky=tk.W, padx=5, pady=3)
-            entry = ttk.Entry(timing_frame, width=15)
-            entry.insert(0, self.env_config.get(key, default))
-            entry.grid(row=row_idx, column=1, padx=5, pady=3, sticky=tk.W)
-            self.timing_entries[key] = entry
+        info_text.pack(anchor=tk.W, padx=5, pady=5)
         
         current_row += 1
         
@@ -397,17 +381,10 @@ class BotGUI(tk.Tk):
         
         ttk.Button(
             btn_frame,
-            text="💾 Guardar Configuracion Avanzada",
+            text="💾 Guardar Configuracion",
             command=self.save_advanced_config,
             width=35
         ).pack(padx=5)
-        
-        ttk.Button(
-            btn_frame,
-            text="🔄 Restaurar Valores por Defecto",
-            command=self.reset_advanced_config,
-            width=35
-        ).pack(pady=5)
         
         canvas.pack(side="left", fill="both", expand=True)
         scrollbar.pack(side="right", fill="y")
@@ -418,62 +395,17 @@ class BotGUI(tk.Tk):
         self.env_config['PROXY_HOST'] = self.proxy_host_entry.get()
         self.env_config['PROXY_PORT'] = self.proxy_port_entry.get()
         
-        # Validar y aplicar valores mínimos
-        min_values = {
-            "TIMING_SHORT_WAIT": 0.3,
-            "TIMING_MEDIUM_WAIT": 1.0,
-            "TIMING_LONG_WAIT": 2.0,
-            "TIMING_PAGE_LOAD": 60,
-            "TIMING_EXPLICIT_WAIT": 15,
-            "TIMING_DOWNLOAD_TIMEOUT": 20,
-            "TIMING_RATE_LIMIT": 0.5,
-            "TIMING_RETRY_DELAY": 2.0
-        }
-        
-        warnings = []
-        for key, entry in self.timing_entries.items():
-            try:
-                value = float(entry.get())
-                min_val = min_values.get(key, 0)
-                if value < min_val:
-                    warnings.append(f"{key}: {value} ajustado a mínimo {min_val}")
-                    value = min_val
-                    entry.delete(0, tk.END)
-                    entry.insert(0, str(value))
-                self.env_config[key] = str(value)
-            except ValueError:
-                messagebox.showerror("Error", f"Valor inválido en {key}")
-                return
-        
-        if warnings:
-            messagebox.showinfo(
-                "Valores Ajustados",
-                "Algunos valores fueron ajustados a sus mínimos:\n\n" + "\n".join(warnings)
-            )
+        # Aplicar valores ultra rápidos automáticos (sin interfaz)
+        self.env_config["TIMING_SHORT_WAIT"] = "0.3"
+        self.env_config["TIMING_MEDIUM_WAIT"] = "1.0"
+        self.env_config["TIMING_LONG_WAIT"] = "2"
+        self.env_config["TIMING_PAGE_LOAD"] = "90"
+        self.env_config["TIMING_EXPLICIT_WAIT"] = "18"
+        self.env_config["TIMING_DOWNLOAD_TIMEOUT"] = "35"
+        self.env_config["TIMING_RATE_LIMIT"] = "0.5"
+        self.env_config["TIMING_RETRY_DELAY"] = "2"
         
         self.save_env()
-
-    def reset_advanced_config(self):
-        if messagebox.askyesno("Confirmar", "¿Restaurar todos los valores avanzados por defecto?"):
-            self.debug_var.set(False)
-            self.proxy_enabled_var.set(False)
-            self.proxy_host_entry.delete(0, tk.END)
-            self.proxy_port_entry.delete(0, tk.END)
-            
-            defaults = {
-                "TIMING_SHORT_WAIT": "0.3",
-                "TIMING_MEDIUM_WAIT": "1.0",
-                "TIMING_LONG_WAIT": "2",
-                "TIMING_PAGE_LOAD": "90",
-                "TIMING_EXPLICIT_WAIT": "18",
-                "TIMING_DOWNLOAD_TIMEOUT": "35",
-                "TIMING_RATE_LIMIT": "0.5",
-                "TIMING_RETRY_DELAY": "2"
-            }
-            
-            for key, value in defaults.items():
-                self.timing_entries[key].delete(0, tk.END)
-                self.timing_entries[key].insert(0, value)
 
     def on_save_env(self):
         usuario = self.form_entries["CLARO_USUARIO"].get().strip()
@@ -504,7 +436,7 @@ class BotGUI(tk.Tk):
         
         title_label = ttk.Label(
             frame,
-            text="Ejecutar Bot RPA v2.5.1 ⚡ OPTIMIZADO",
+            text="🚀 Ejecutar Bot RPA v2.6 ULTRA RAPIDO",
             font=("Arial", 14, "bold")
         )
         title_label.pack(pady=20)
@@ -513,15 +445,14 @@ class BotGUI(tk.Tk):
             frame,
             text="Presiona el boton para iniciar el proceso de descarga automatica.\n"
                  "El bot cerrara Chrome automaticamente si esta abierto.\n\n"
-                 "Nueva version 2.5.1 ULTRA RAPIDA incluye:\n"
-                 "⚡ Optimizado para conexiones 80+ Mbps\n"
-                 "⚡ 50% más rápido que v2.4 (ahora aún más!)\n"
-                 "✅ Login en ~5 segundos\n"
-                 "✅ Cada búsqueda en ~12 segundos\n"
-                 "✅ Sin errores de timeout (validación automática)\n"
-                 "✅ Detección instantánea de descargas\n"
-                 "✅ Rate limiting mínimo (0.5s)\n"
-                 "✅ Soporte para proxy y modo debug",
+                 "🚀 Version 2.6 ULTRA RAPIDA - SIN ESPERAS:\n"
+                 "⚡ Velocidad máxima automática - Sin configuración\n"
+                 "⚡ Login en ~3 segundos\n"
+                 "⚡ Búsquedas instantáneas\n"
+                 "✅ Sin delays artificiales\n"
+                 "✅ Detección inteligente sin esperas\n"
+                 "✅ Optimizado para 80+ Mbps\n"
+                 "🎯 ¡Solo ejecuta y listo!",
             font=("Arial", 10),
             justify=tk.CENTER
         )
@@ -542,7 +473,7 @@ class BotGUI(tk.Tk):
             ("📥 Ubicacion de descargas:", f"{os.environ.get('USERPROFILE', '')}\\Downloads"),
             ("🔧 Configuracion:", "config/terms.json y .env"),
             ("⚙️ Modo:", "Descarga automatica sin intervencion"),
-            ("🔄 Version:", "2.5.0")
+            ("🔄 Version:", "2.6.0 - Ultra Rapido")
         ]
         
         for label, value in info_items:

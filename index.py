@@ -19,7 +19,7 @@ from selenium.common.exceptions import (
 )
 from dotenv import load_dotenv
 
-VERSION = "2.5.1"
+VERSION = "2.6.0"
 GITHUB_REPO = "ChampiP/bot-rpa"
 
 
@@ -49,9 +49,9 @@ class TimingConfig:
         self.short_wait = max(0.3, float(os.getenv('TIMING_SHORT_WAIT', '0.3')))
         self.medium_wait = max(1.0, float(os.getenv('TIMING_MEDIUM_WAIT', '1.0')))
         self.long_wait = max(2.0, float(os.getenv('TIMING_LONG_WAIT', '2')))
-        self.page_load_timeout = max(60, int(os.getenv('TIMING_PAGE_LOAD', '90')))
-        self.explicit_wait = max(15, int(os.getenv('TIMING_EXPLICIT_WAIT', '18')))
-        self.download_timeout = int(os.getenv('TIMING_DOWNLOAD_TIMEOUT', '35'))
+        self.page_load_timeout = max(60, int(float(os.getenv('TIMING_PAGE_LOAD', '90'))))
+        self.explicit_wait = max(15, int(float(os.getenv('TIMING_EXPLICIT_WAIT', '18'))))
+        self.download_timeout = int(float(os.getenv('TIMING_DOWNLOAD_TIMEOUT', '35')))
         self.rate_limit_delay = max(0.5, float(os.getenv('TIMING_RATE_LIMIT', '0.5')))
         self.retry_delay = max(2.0, float(os.getenv('TIMING_RETRY_DELAY', '2')))
     
@@ -526,7 +526,7 @@ class BotRPA:
         
     def initialize_driver(self):
         print("=" * 60)
-        print(f"   INICIANDO BOT RPA v{VERSION} - ULTRA RAPIDO SIN DELAYS")
+        print(f"   INICIANDO BOT RPA v{VERSION} - ULTRA RAPIDO AUTOMATICO")
         print("=" * 60)
         
         UpdateChecker.check_for_updates()
@@ -535,7 +535,7 @@ class BotRPA:
         print(f"[*] Carpeta de descargas: {self.dirs.download_dir}")
         print("[*] Safe Browsing: DESACTIVADO")
         print("[*] Proteccion de descargas: DESACTIVADA")
-        print("[*] Modo ULTRA RAPIDO: SIN esperas artificiales")
+        print("[*] Modo ULTRA RAPIDO: Velocidad maxima sin configuracion")
         
         if self.config.debug_mode:
             print("[*] Modo DEBUG: ACTIVADO")
