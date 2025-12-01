@@ -1,42 +1,16 @@
 import os
-import json
+import sys
 import threading
 import subprocess
+import webbrowser
+import requests
 import tkinter as tk
-from tkinter import messagebox, simpledialog
-from tkinter import ttk
-import sys
+from tkinter import messagebox, simpledialog, ttk
 
-# Detectar si se ejecuta como .exe (PyInstaller)
-if getattr(sys, 'frozen', False):
-    BASE_DIR = sys._MEIPASS
-    # Usar carpeta de usuario para guardar configs
-    CONFIG_DIR = os.path.join(os.path.expanduser('~'), '.botrpa', 'config')
-else:
-    BASE_DIR = os.path.dirname(__file__)
-    CONFIG_DIR = os.path.join(BASE_DIR, 'config')
+from core import database as db
 
-TERMS_FILE = os.path.join(CONFIG_DIR, 'terms.json')
-ENV_FILE = os.path.join(os.path.dirname(os.path.abspath(sys.argv[0])) if getattr(sys, 'frozen', False) else BASE_DIR, '.env')
-
-# Términos embebidos en el código (no necesita archivo externo)
-DEFAULT_TERMS = [
-    "Oferta Comercial Postpago y Colaborador Resumen Nota de Producto",
-    "Bloqueo de Línea y Equipo Diagrama",
-    "Migración de Plan Móvil Prepago y Postpago Diagrama",
-    "Guía de Atención para Cuestionamientos de Cobros en Recibos Móvil Masivo",
-    "Descartes AT Móvil Canal Telefónico Primer Nivel Postpago",
-    "Problemas de Pago Diagrama",
-    "Contención de Bajas Diagrama",
-    "Guía de Recomendación Comercial y Ventas",
-    "Reclamos Móvil Diagrama",
-    "Resumen de Agregadores",
-    "Ajustes de NC ND DCAJ y OCC Diagrama",
-    "Solución Anticipada de Reclamos SAR Diagrama",
-    "Gestión de Cobranza Diagrama",
-    "Gestión de Cobranza Equipos con Deuda Diagrama",
-    "Horarios y Responsables de los Centros de Atención"
-]
+VERSION = "2.6.0"
+GITHUB_REPO = "ChampiP/bot-rpa"
 
 
 class BotGUI(tk.Tk):
@@ -84,9 +58,9 @@ class BotGUI(tk.Tk):
         self.setup_ui()
     
     def load_configuration(self):
-        os.makedirs(CONFIG_DIR, exist_ok=True)
-        self.search_terms = self.load_terms()
-        self.env_config = self.load_env()
+        # Cargar configuración desde SQLite
+        self.search_terms = db.get_terms()
+        self.env_config = db.get_all_config()
     
     def setup_ui(self):
         self.tabs = ttk.Notebook(self)
@@ -106,72 +80,26 @@ class BotGUI(tk.Tk):
         self.build_run_tab()
         self.build_instructions_tab()
 
-    def load_terms(self):
-        # Crear directorio si no existe
-        os.makedirs(CONFIG_DIR, exist_ok=True)
-        
-        try:
-            with open(TERMS_FILE, 'r', encoding='utf-8') as f:
-                data = json.load(f)
-                return data.get('lista_busqueda', DEFAULT_TERMS)
-        except Exception:
-            # Si no existe, usar términos por defecto y crear archivo
-            self.save_terms_to_file(DEFAULT_TERMS)
-            return DEFAULT_TERMS.copy()
-    
-    def save_terms_to_file(self, terms):
-        """Guarda términos en archivo JSON"""
-        try:
-            os.makedirs(CONFIG_DIR, exist_ok=True)
-            with open(TERMS_FILE, 'w', encoding='utf-8') as f:
-                json.dump({"lista_busqueda": terms}, f, ensure_ascii=False, indent=2)
-        except Exception:
-            pass
-
     def save_terms(self):
-        self.save_terms_to_file(self.search_terms)
-        messagebox.showinfo("✅ Guardado", "Términos guardados correctamente.", icon='info')
-
-    def load_env(self):
-        env = {
-            "CLARO_USUARIO": "",
-            "CLARO_CLAVE": "",
-            "URL_LOGIN": "http://portaldeconocimiento.claro.com.pe/web/guest/login",
-            "URL_BUSCADOR": "http://portaldeconocimiento.claro.com.pe/comunicaciones-internas",
-            "ID_BARRA_BUSQUEDA": "_3_keywords",
-            "DEBUG_MODE": "false",
-            "PROXY_ENABLED": "false",
-            "PROXY_HOST": "",
-            "PROXY_PORT": "",
-            "TIMING_SHORT_WAIT": "0.3",
-            "TIMING_MEDIUM_WAIT": "1.0",
-            "TIMING_LONG_WAIT": "2",
-            "TIMING_PAGE_LOAD": "90",
-            "TIMING_EXPLICIT_WAIT": "18",
-            "TIMING_DOWNLOAD_TIMEOUT": "35",
-            "TIMING_RATE_LIMIT": "0.5",
-            "TIMING_RETRY_DELAY": "2"
-        }
-        try:
-            if os.path.exists(ENV_FILE):
-                with open(ENV_FILE, 'r', encoding='utf-8') as f:
-                    for line in f:
-                        if '=' in line and not line.strip().startswith('#'):
-                            key, value = line.strip().split('=', 1)
-                            env[key] = value
-        except Exception:
-            pass
-        return env
+        """Guarda términos en SQLite"""
+        if db.save_terms(self.search_terms):
+            messagebox.showinfo("✅ Guardado", "Términos guardados correctamente.", icon='info')
+        else:
+            messagebox.showerror("Error", "No se pudieron guardar los términos.")
 
     def save_env(self):
+        """Guarda configuración en SQLite"""
         try:
-            with open(ENV_FILE, 'w', encoding='utf-8') as f:
-                f.write("# Credenciales y ajustes del Bot RPA\n")
-                for key, value in self.env_config.items():
-                    f.write(f"{key}={value}\n")
-            messagebox.showinfo("Guardado", ".env actualizado correctamente.")
+            # Guardar credenciales
+            db.save_credentials(
+                self.env_config.get("CLARO_USUARIO", ""),
+                self.env_config.get("CLARO_CLAVE", "")
+            )
+            # Guardar resto de configuración
+            db.save_all_config(self.env_config)
+            messagebox.showinfo("Guardado", "Configuración actualizada correctamente.")
         except Exception as e:
-            messagebox.showerror("Error", f"No se pudo guardar .env: {e}")
+            messagebox.showerror("Error", f"No se pudo guardar la configuración: {e}")
 
     def build_terms_tab(self):
         frame = self.tab_terms
@@ -350,7 +278,7 @@ class BotGUI(tk.Tk):
         
         note_label = ttk.Label(
             scrollable_frame,
-            text="Nota: Los cambios se guardaran en el archivo .env",
+            text="Nota: Los cambios se guardaran en la base de datos local (SQLite)",
             font=("Segoe UI", 8, "italic"),
             foreground="gray"
         )
@@ -458,7 +386,6 @@ class BotGUI(tk.Tk):
         github_label.pack()
         
         def open_github(e):
-            import webbrowser
             webbrowser.open('https://github.com/ChampiP')
         
         github_label.bind('<Button-1>', open_github)
@@ -469,8 +396,14 @@ class BotGUI(tk.Tk):
             font=("Segoe UI", 9, "bold"),
             bg='#f8f8f8',
             fg='#25D366',
+            cursor='hand2',
             pady=3
         )
+
+        def open_whatsapp(event=None):
+            webbrowser.open('https://wa.me/51946674643?text=Hola%20tengo%20una%20consulta%20sobre%20CoorpiBot')
+
+        whatsapp_label.bind("<Button-1>", open_whatsapp)
         whatsapp_label.pack()
         
         version_label = tk.Label(
@@ -527,8 +460,8 @@ class BotGUI(tk.Tk):
         info_frame.pack(pady=10, padx=40, fill=tk.X)
         
         info_items = [
-            ("📥 Descargas:", f"C:\\Users\\MDY\\Downloads"),
-            ("🔧 Config:", "config/terms.json y .env")
+            ("📥 Descargas:", f"C:\\Users\\tu usuario\\Downloads"),
+            ("🔧 Config:", f"Base de datos SQLite ({db.get_db_path()})")
         ]
         
         for label, value in info_items:
@@ -575,11 +508,10 @@ class BotGUI(tk.Tk):
                 
                 # Si está ejecutándose como .exe, importar y ejecutar directamente
                 if getattr(sys, 'frozen', False):
-                    # Ejecutar en un hilo separado para no bloquear la GUI
                     def run_bot_module():
                         try:
-                            import index
-                            index.main()  # Llamar explícitamente a la función main
+                            from bot import main
+                            main()
                         except Exception as e:
                             messagebox.showerror("Error", f"Error al ejecutar el bot: {e}")
                     
@@ -591,16 +523,16 @@ class BotGUI(tk.Tk):
                         "Revisa la carpeta Downloads para ver los archivos descargados."
                     )
                 else:
-                    # Modo desarrollo: ejecutar index.py con Python
-                    index_path = os.path.join(os.path.dirname(__file__), "index.py")
+                    # Modo desarrollo: ejecutar bot.py con Python
+                    bot_path = os.path.join(os.path.dirname(__file__), "bot.py")
                     
                     if os.name == 'nt':
                         subprocess.Popen(
-                            ["cmd", "/c", "start", "cmd", "/k", "python", index_path],
+                            ["cmd", "/c", "start", "cmd", "/k", "python", bot_path],
                             creationflags=subprocess.CREATE_NEW_CONSOLE
                         )
                     else:
-                        subprocess.Popen(["python", index_path])
+                        subprocess.Popen(["python", bot_path])
                     
                     messagebox.showinfo(
                         "Bot Iniciado",
@@ -676,79 +608,89 @@ class BotGUI(tk.Tk):
         separator = ttk.Separator(scrollable_frame, orient='horizontal')
         separator.pack(fill=tk.X, padx=20, pady=15)
         
-        # Créditos y Copyright
-        credits_frame = tk.Frame(scrollable_frame, bg='#f8f8f8', relief=tk.RIDGE, borderwidth=1)
-        credits_frame.pack(pady=10, padx=20, fill=tk.X)
+        # Sección de Actualizaciones
+        update_frame = tk.Frame(scrollable_frame, bg='#e3f2fd', relief=tk.RIDGE, borderwidth=1)
+        update_frame.pack(fill=tk.X, padx=20, pady=10)
         
-        copyright_title = tk.Label(
-            credits_frame,
-            text="© Copyright & Créditos",
-            font=("Segoe UI", 11, "bold"),
-            bg='#f8f8f8',
-            fg='#2196F3',
+        update_title = tk.Label(
+            update_frame,
+            text="🔄 Actualizaciones",
+            font=("Segoe UI", 10, "bold"),
+            bg='#e3f2fd',
+            fg='#1976D2',
             pady=8
         )
-        copyright_title.pack()
-        
-        author_label = tk.Label(
-            credits_frame,
-            text="👨‍💻 Autor: ChampiP",
-            font=("Segoe UI", 9, "bold"),
-            bg='#f8f8f8',
-            fg='#333333',
-            pady=3
-        )
-        author_label.pack()
-        
-        github_label = tk.Label(
-            credits_frame,
-            text="🔗 GitHub: https://github.com/ChampiP",
-            font=("Segoe UI", 9),
-            bg='#f8f8f8',
-            fg='#1976D2',
-            cursor='hand2',
-            pady=3
-        )
-        github_label.pack()
-        
-        def open_github(e):
-            import webbrowser
-            webbrowser.open('https://github.com/ChampiP')
-        
-        github_label.bind('<Button-1>', open_github)
-        
-        whatsapp_label = tk.Label(
-            credits_frame,
-            text="📞 Contacto WhatsApp: +51 946 674 643",
-            font=("Segoe UI", 9, "bold"),
-            bg='#f8f8f8',
-            fg='#25D366',
-            pady=3
-        )
-        whatsapp_label.pack()
+        update_title.pack()
         
         version_label = tk.Label(
-            credits_frame,
-            text="🔖 CoorpiBot v2.6",
-            font=("Segoe UI", 8),
-            bg='#f8f8f8',
-            fg='#666666',
-            pady=8
+            update_frame,
+            text=f"Versión actual: v{VERSION}",
+            font=("Segoe UI", 9),
+            bg='#e3f2fd',
+            fg='#555555'
         )
         version_label.pack()
         
-        copyright_label = tk.Label(
-            credits_frame,
-            text="© 2025 ChampiP. Todos los derechos reservados.",
-            font=("Segoe UI", 8, "italic"),
-            bg='#f8f8f8',
-            fg='#999999',
-            pady=5
+        update_btn = tk.Button(
+            update_frame,
+            text="🔍 Buscar Actualizaciones",
+            command=self.check_for_updates,
+            font=("Segoe UI", 9, "bold"),
+            bg='#2196F3',
+            fg='white',
+            activebackground='#1976D2',
+            activeforeground='white',
+            relief=tk.FLAT,
+            padx=20,
+            pady=8,
+            cursor='hand2'
         )
-        copyright_label.pack()
+        update_btn.pack(pady=10)
         
         canvas.pack(side="left", fill="both", expand=True)
         scrollbar.pack(side="right", fill="y")
+    
+    def check_for_updates(self):
+        """Verificar si hay actualizaciones disponibles en GitHub"""
+        try:
+            url = f"https://api.github.com/repos/{GITHUB_REPO}/releases/latest"
+            response = requests.get(url, timeout=10)
+            
+            if response.status_code == 200:
+                data = response.json()
+                latest_version = data.get('tag_name', '').lstrip('v')
+                current_version = VERSION.lstrip('v')
+                
+                if latest_version and latest_version > current_version:
+                    result = messagebox.askyesno(
+                        "🎉 Nueva Versión Disponible",
+                        f"¡Hay una nueva versión disponible!\n\n"
+                        f"Tu versión: v{current_version}\n"
+                        f"Nueva versión: v{latest_version}\n\n"
+                        f"¿Deseas ir a la página de descarga?"
+                    )
+                    if result:
+                        webbrowser.open(f"https://github.com/{GITHUB_REPO}/releases/latest")
+                else:
+                    messagebox.showinfo(
+                        "✅ Actualizado",
+                        f"¡Tienes la última versión!\n\nVersión actual: v{current_version}"
+                    )
+            elif response.status_code == 404:
+                messagebox.showinfo(
+                    "Sin Releases",
+                    "Aún no hay versiones publicadas en GitHub.\n"
+                    "Visita el repositorio para más información."
+                )
+            else:
+                raise Exception(f"Error HTTP {response.status_code}")
+                
+        except requests.exceptions.Timeout:
+            messagebox.showerror("Error", "Tiempo de espera agotado.\nVerifica tu conexión a Internet.")
+        except requests.exceptions.ConnectionError:
+            messagebox.showerror("Error", "No se pudo conectar a Internet.\nVerifica tu conexión.")
+        except Exception as e:
+            messagebox.showerror("Error", f"No se pudo verificar actualizaciones:\n{e}")
 
 
 if __name__ == "__main__":

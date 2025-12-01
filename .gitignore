@@ -1,15 +1,12 @@
 # ===================================
-# .gitignore - Proyecto Bot RPA
+# .gitignore - CoorpiBot
 # ===================================
 
-# Credenciales y configuración sensible
-.env
-*.env
-.env.local
-.env.*.local
+# Base de datos SQLite (contiene credenciales)
+*.db
+coorpibot.db
 
 # Archivos descargados
-Diagramas_Claro_Final/
 *.xlsm
 *.xlsx
 
@@ -60,3 +57,7 @@ $RECYCLE.BIN/
 # Logs
 *.log
 logs/
+
+# Ejecutables compilados
+*.exe
+*.spec
