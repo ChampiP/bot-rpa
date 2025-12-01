@@ -5,38 +5,76 @@ import subprocess
 import tkinter as tk
 from tkinter import messagebox, simpledialog
 from tkinter import ttk
+import sys
 
+# Detectar si se ejecuta como .exe (PyInstaller)
+if getattr(sys, 'frozen', False):
+    BASE_DIR = sys._MEIPASS
+    # Usar carpeta de usuario para guardar configs
+    CONFIG_DIR = os.path.join(os.path.expanduser('~'), '.botrpa', 'config')
+else:
+    BASE_DIR = os.path.dirname(__file__)
+    CONFIG_DIR = os.path.join(BASE_DIR, 'config')
 
-CONFIG_DIR = os.path.join(os.path.dirname(__file__), 'config')
 TERMS_FILE = os.path.join(CONFIG_DIR, 'terms.json')
-ENV_FILE = os.path.join(os.path.dirname(__file__), '.env')
+ENV_FILE = os.path.join(os.path.dirname(os.path.abspath(sys.argv[0])) if getattr(sys, 'frozen', False) else BASE_DIR, '.env')
 
+# Términos embebidos en el código (no necesita archivo externo)
 DEFAULT_TERMS = [
-    "Migracion de plan",
-    "Guia de cuestionamiento para cobro de recibo",
-    "Bloqueo de linea y equipo",
-    "Gestion de cobranza",
-    "Guia de recomendacion comercial y ventas",
-    "Descartes at",
-    "contencion de bajas"
+    "Oferta Comercial Postpago y Colaborador Resumen Nota de Producto",
+    "Bloqueo de Línea y Equipo Diagrama",
+    "Migración de Plan Móvil Prepago y Postpago Diagrama",
+    "Guía de Atención para Cuestionamientos de Cobros en Recibos Móvil Masivo",
+    "Descartes AT Móvil Canal Telefónico Primer Nivel Postpago",
+    "Problemas de Pago Diagrama",
+    "Contención de Bajas Diagrama",
+    "Guía de Recomendación Comercial y Ventas",
+    "Reclamos Móvil Diagrama",
+    "Resumen de Agregadores",
+    "Ajustes de NC ND DCAJ y OCC Diagrama",
+    "Solución Anticipada de Reclamos SAR Diagrama",
+    "Gestión de Cobranza Diagrama",
+    "Gestión de Cobranza Equipos con Deuda Diagrama",
+    "Horarios y Responsables de los Centros de Atención"
 ]
 
 
 class BotGUI(tk.Tk):
     def __init__(self):
         super().__init__()
-        self.title("Bot RPA Claro v2.6 ULTRA RAPIDO - Sin Esperas")
+        self.title("🤖 CoorpiBot")
+        
+        # Configurar colores modernos
+        self.configure(bg='#f5f5f5')
+        
+        # Estilo moderno
+        style = ttk.Style()
+        style.theme_use('clam')
+        
+        # Colores personalizados
+        style.configure('TNotebook', background='#f5f5f5', borderwidth=0)
+        style.configure('TNotebook.Tab', padding=[15, 8], font=('Segoe UI', 9, 'bold'))
+        style.map('TNotebook.Tab', background=[('selected', '#2196F3')], foreground=[('selected', 'white')])
+        style.configure('TFrame', background='#ffffff')
+        style.configure('TLabel', background='#ffffff', font=('Segoe UI', 9))
+        style.configure('TButton', font=('Segoe UI', 9, 'bold'), padding=8)
         
         screen_width = self.winfo_screenwidth()
         screen_height = self.winfo_screenheight()
         
-        min_width = 900
-        min_height = 700
-        default_width = min(1200, int(screen_width * 0.75))
-        default_height = min(800, int(screen_height * 0.75))
+        # Interfaz más compacta
+        min_width = 650
+        min_height = 480
+        default_width = 720
+        default_height = 540
         
-        self.geometry(f"{default_width}x{default_height}")
+        # Centrar ventana en la pantalla
+        x = (screen_width - default_width) // 2
+        y = (screen_height - default_height) // 2
+        
+        self.geometry(f"{default_width}x{default_height}+{x}+{y}")
         self.minsize(min_width, min_height)
+        self.resizable(True, True)
         
         self.form_entries = {}
         self.search_terms = []
@@ -54,35 +92,45 @@ class BotGUI(tk.Tk):
         self.tabs = ttk.Notebook(self)
         self.tab_terms = ttk.Frame(self.tabs)
         self.tab_settings = ttk.Frame(self.tabs)
-        self.tab_advanced = ttk.Frame(self.tabs)
         self.tab_run = ttk.Frame(self.tabs)
+        self.tab_instructions = ttk.Frame(self.tabs)
         
-        self.tabs.add(self.tab_terms, text="Terminos")
-        self.tabs.add(self.tab_settings, text="Ajustes")
-        self.tabs.add(self.tab_advanced, text="Avanzado")
-        self.tabs.add(self.tab_run, text="Ejecutar")
+        self.tabs.add(self.tab_terms, text="📋 Términos")
+        self.tabs.add(self.tab_settings, text="⚙️ Ajustes")
+        self.tabs.add(self.tab_run, text="🚀 Ejecutar")
+        self.tabs.add(self.tab_instructions, text="📖 Instrucciones")
         self.tabs.pack(fill=tk.BOTH, expand=True, padx=5, pady=5)
         
         self.build_terms_tab()
         self.build_settings_tab()
-        self.build_advanced_tab()
         self.build_run_tab()
+        self.build_instructions_tab()
 
     def load_terms(self):
+        # Crear directorio si no existe
+        os.makedirs(CONFIG_DIR, exist_ok=True)
+        
         try:
             with open(TERMS_FILE, 'r', encoding='utf-8') as f:
                 data = json.load(f)
                 return data.get('lista_busqueda', DEFAULT_TERMS)
         except Exception:
+            # Si no existe, usar términos por defecto y crear archivo
+            self.save_terms_to_file(DEFAULT_TERMS)
             return DEFAULT_TERMS.copy()
+    
+    def save_terms_to_file(self, terms):
+        """Guarda términos en archivo JSON"""
+        try:
+            os.makedirs(CONFIG_DIR, exist_ok=True)
+            with open(TERMS_FILE, 'w', encoding='utf-8') as f:
+                json.dump({"lista_busqueda": terms}, f, ensure_ascii=False, indent=2)
+        except Exception:
+            pass
 
     def save_terms(self):
-        try:
-            with open(TERMS_FILE, 'w', encoding='utf-8') as f:
-                json.dump({"lista_busqueda": self.search_terms}, f, ensure_ascii=False, indent=2)
-            messagebox.showinfo("Guardado", "Terminos guardados correctamente.")
-        except Exception as e:
-            messagebox.showerror("Error", f"No se pudo guardar: {e}")
+        self.save_terms_to_file(self.search_terms)
+        messagebox.showinfo("✅ Guardado", "Términos guardados correctamente.", icon='info')
 
     def load_env(self):
         env = {
@@ -127,17 +175,35 @@ class BotGUI(tk.Tk):
 
     def build_terms_tab(self):
         frame = self.tab_terms
+        frame.configure(style='TFrame')
         
-        label = ttk.Label(frame, text="Lista de terminos a buscar:", font=("Arial", 10, "bold"))
-        label.pack(anchor=tk.W, padx=10, pady=(10, 5))
+        # Header más compacto
+        header_frame = ttk.Frame(frame)
+        header_frame.pack(fill=tk.X, padx=15, pady=(10, 8))
+        
+        label = tk.Label(header_frame, text="📋 Términos a buscar:", font=("Segoe UI", 10, "bold"), bg='#ffffff', fg='#2196F3')
+        label.pack(anchor=tk.W)
         
         list_frame = ttk.Frame(frame)
-        list_frame.pack(fill=tk.BOTH, expand=True, padx=10, pady=5)
+        list_frame.pack(fill=tk.BOTH, expand=True, padx=15, pady=8)
         
         scrollbar = ttk.Scrollbar(list_frame)
         scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
         
-        self.listbox = tk.Listbox(list_frame, yscrollcommand=scrollbar.set, font=("Arial", 9))
+        self.listbox = tk.Listbox(
+            list_frame, 
+            yscrollcommand=scrollbar.set, 
+            font=("Segoe UI", 9),
+            bg='#ffffff',
+            fg='#333333',
+            selectbackground='#2196F3',
+            selectforeground='white',
+            relief=tk.FLAT,
+            borderwidth=1,
+            highlightthickness=1,
+            highlightcolor='#2196F3',
+            highlightbackground='#ddd'
+        )
         self.listbox.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
         scrollbar.config(command=self.listbox.yview)
         
@@ -145,7 +211,11 @@ class BotGUI(tk.Tk):
             self.listbox.insert(tk.END, term)
         
         btn_frame = ttk.Frame(frame)
-        btn_frame.pack(fill=tk.X, padx=10, pady=10)
+        btn_frame.pack(fill=tk.X, padx=15, pady=10)
+        
+        # Botones de edición
+        edit_frame = ttk.Frame(btn_frame)
+        edit_frame.pack(side=tk.LEFT)
         
         buttons = [
             ("➕ Agregar", self.add_term),
@@ -156,9 +226,12 @@ class BotGUI(tk.Tk):
         ]
         
         for text, command in buttons:
-            ttk.Button(btn_frame, text=text, command=command, width=12).pack(side=tk.LEFT, padx=5)
+            btn = ttk.Button(edit_frame, text=text, command=command, width=10)
+            btn.pack(side=tk.LEFT, padx=2)
         
-        ttk.Button(btn_frame, text="💾 Guardar", command=self.save_terms, width=12).pack(side=tk.RIGHT, padx=5)
+        # Botón guardar destacado
+        save_btn = ttk.Button(btn_frame, text="💾 Guardar", command=self.save_terms, width=12)
+        save_btn.pack(side=tk.RIGHT, padx=3)
 
     def add_term(self):
         term = simpledialog.askstring("Agregar termino", "Nuevo termino de busqueda:")
@@ -228,9 +301,9 @@ class BotGUI(tk.Tk):
         title_label = ttk.Label(
             scrollable_frame, 
             text="Configuracion de Credenciales y URLs", 
-            font=("Arial", 12, "bold")
+            font=("Segoe UI", 10, "bold")
         )
-        title_label.grid(row=0, column=0, columnspan=2, pady=10, padx=10, sticky=tk.W)
+        title_label.grid(row=0, column=0, columnspan=2, pady=8, padx=10, sticky=tk.W)
         
         fields = [
             ("Usuario", "CLARO_USUARIO", False),
@@ -243,169 +316,50 @@ class BotGUI(tk.Tk):
         for index, (label, key, is_password) in enumerate(fields):
             row = index + 1
             
-            ttk.Label(scrollable_frame, text=f"{label}:", font=("Arial", 9, "bold")).grid(
-                row=row, column=0, sticky=tk.W, padx=10, pady=8
+            ttk.Label(scrollable_frame, text=f"{label}:", font=("Segoe UI", 9, "bold")).grid(
+                row=row, column=0, sticky=tk.W, padx=10, pady=5
             )
             
             if is_password:
-                entry = ttk.Entry(scrollable_frame, width=60, show="*")
+                entry = ttk.Entry(scrollable_frame, width=50, show="*")
             else:
-                entry = ttk.Entry(scrollable_frame, width=60)
+                entry = ttk.Entry(scrollable_frame, width=50)
             
-            entry.grid(row=row, column=1, padx=10, pady=8, sticky=tk.EW)
+            entry.grid(row=row, column=1, padx=10, pady=5, sticky=tk.EW)
             entry.insert(0, self.env_config.get(key, ''))
             self.form_entries[key] = entry
         
         scrollable_frame.columnconfigure(1, weight=1)
         
         btn_frame = ttk.Frame(scrollable_frame)
-        btn_frame.grid(row=len(fields) + 1, column=0, columnspan=2, pady=20)
+        btn_frame.grid(row=len(fields) + 1, column=0, columnspan=2, pady=12)
         
         ttk.Button(
             btn_frame, 
             text="💾 Guardar Configuracion", 
             command=self.on_save_env,
-            width=25
+            width=22
         ).pack(side=tk.LEFT, padx=5)
         
         ttk.Button(
             btn_frame,
             text="👁️ Mostrar/Ocultar Contrasena",
             command=self.toggle_password,
-            width=30
+            width=26
         ).pack(side=tk.LEFT, padx=5)
         
         note_label = ttk.Label(
             scrollable_frame,
             text="Nota: Los cambios se guardaran en el archivo .env",
-            font=("Arial", 8, "italic"),
+            font=("Segoe UI", 8, "italic"),
             foreground="gray"
         )
-        note_label.grid(row=len(fields) + 2, column=0, columnspan=2, pady=5)
-        
-        tip_label = ttk.Label(
-            scrollable_frame,
-            text="⚡ Modo Ultra Rápido Automático: Sin necesidad de configurar timeouts",
-            font=("Arial", 8, "bold"),
-            foreground="darkgreen"
-        )
-        tip_label.grid(row=len(fields) + 3, column=0, columnspan=2, pady=5)
+        note_label.grid(row=len(fields) + 2, column=0, columnspan=2, pady=8)
         
         canvas.pack(side="left", fill="both", expand=True)
         scrollbar.pack(side="right", fill="y")
 
-    def build_advanced_tab(self):
-        frame = self.tab_advanced
-        
-        canvas = tk.Canvas(frame)
-        scrollbar = ttk.Scrollbar(frame, orient="vertical", command=canvas.yview)
-        scrollable_frame = ttk.Frame(canvas)
-        
-        scrollable_frame.bind(
-            "<Configure>",
-            lambda e: canvas.configure(scrollregion=canvas.bbox("all"))
-        )
-        
-        canvas.create_window((0, 0), window=scrollable_frame, anchor="nw")
-        canvas.configure(yscrollcommand=scrollbar.set)
-        
-        title_label = ttk.Label(
-            scrollable_frame, 
-            text="Configuracion Avanzada", 
-            font=("Arial", 12, "bold")
-        )
-        title_label.grid(row=0, column=0, columnspan=3, pady=10, padx=10, sticky=tk.W)
-        
-        current_row = 1
-        
-        debug_frame = ttk.LabelFrame(scrollable_frame, text="Debug", padding=10)
-        debug_frame.grid(row=current_row, column=0, columnspan=3, padx=10, pady=10, sticky=tk.EW)
-        
-        self.debug_var = tk.BooleanVar(value=self.env_config.get('DEBUG_MODE', 'false').lower() == 'true')
-        ttk.Checkbutton(
-            debug_frame, 
-            text="Activar modo debug (muestra informacion detallada)",
-            variable=self.debug_var
-        ).pack(anchor=tk.W)
-        
-        current_row += 1
-        
-        proxy_frame = ttk.LabelFrame(scrollable_frame, text="Configuracion de Proxy", padding=10)
-        proxy_frame.grid(row=current_row, column=0, columnspan=3, padx=10, pady=10, sticky=tk.EW)
-        
-        self.proxy_enabled_var = tk.BooleanVar(
-            value=self.env_config.get('PROXY_ENABLED', 'false').lower() == 'true'
-        )
-        ttk.Checkbutton(
-            proxy_frame, 
-            text="Usar Proxy",
-            variable=self.proxy_enabled_var
-        ).grid(row=0, column=0, columnspan=2, sticky=tk.W, pady=5)
-        
-        ttk.Label(proxy_frame, text="Host:").grid(row=1, column=0, sticky=tk.W, padx=5, pady=5)
-        self.proxy_host_entry = ttk.Entry(proxy_frame, width=40)
-        self.proxy_host_entry.insert(0, self.env_config.get('PROXY_HOST', ''))
-        self.proxy_host_entry.grid(row=1, column=1, padx=5, pady=5, sticky=tk.EW)
-        
-        ttk.Label(proxy_frame, text="Puerto:").grid(row=2, column=0, sticky=tk.W, padx=5, pady=5)
-        self.proxy_port_entry = ttk.Entry(proxy_frame, width=40)
-        self.proxy_port_entry.insert(0, self.env_config.get('PROXY_PORT', ''))
-        self.proxy_port_entry.grid(row=2, column=1, padx=5, pady=5, sticky=tk.EW)
-        
-        proxy_frame.columnconfigure(1, weight=1)
-        
-        current_row += 1
-        
-        # Info sobre timeouts automáticos
-        info_frame = ttk.LabelFrame(scrollable_frame, text="⚡ MODO ULTRA RAPIDO AUTOMATICO", padding=15)
-        info_frame.grid(row=current_row, column=0, columnspan=3, padx=10, pady=10, sticky=tk.EW)
-        
-        info_text = ttk.Label(
-            info_frame,
-            text="🚀 El bot ahora usa valores de velocidad máxima AUTOMATICOS\n\n"
-                 "✅ Sin configuración de timeouts necesaria\n"
-                 "✅ Sin delays artificiales\n"
-                 "✅ Optimizado para conexiones de 80+ Mbps\n"
-                 "✅ Detección inteligente sin esperas\n\n"
-                 "💡 ¡Solo ejecuta y disfruta de la velocidad máxima!",
-            font=("Arial", 10),
-            foreground="darkgreen",
-            justify=tk.LEFT
-        )
-        info_text.pack(anchor=tk.W, padx=5, pady=5)
-        
-        current_row += 1
-        
-        btn_frame = ttk.Frame(scrollable_frame)
-        btn_frame.grid(row=current_row, column=0, columnspan=3, pady=20)
-        
-        ttk.Button(
-            btn_frame,
-            text="💾 Guardar Configuracion",
-            command=self.save_advanced_config,
-            width=35
-        ).pack(padx=5)
-        
-        canvas.pack(side="left", fill="both", expand=True)
-        scrollbar.pack(side="right", fill="y")
 
-    def save_advanced_config(self):
-        self.env_config['DEBUG_MODE'] = 'true' if self.debug_var.get() else 'false'
-        self.env_config['PROXY_ENABLED'] = 'true' if self.proxy_enabled_var.get() else 'false'
-        self.env_config['PROXY_HOST'] = self.proxy_host_entry.get()
-        self.env_config['PROXY_PORT'] = self.proxy_port_entry.get()
-        
-        # Aplicar valores ultra rápidos automáticos (sin interfaz)
-        self.env_config["TIMING_SHORT_WAIT"] = "0.3"
-        self.env_config["TIMING_MEDIUM_WAIT"] = "1.0"
-        self.env_config["TIMING_LONG_WAIT"] = "2"
-        self.env_config["TIMING_PAGE_LOAD"] = "90"
-        self.env_config["TIMING_EXPLICIT_WAIT"] = "18"
-        self.env_config["TIMING_DOWNLOAD_TIMEOUT"] = "35"
-        self.env_config["TIMING_RATE_LIMIT"] = "0.5"
-        self.env_config["TIMING_RETRY_DELAY"] = "2"
-        
-        self.save_env()
 
     def on_save_env(self):
         usuario = self.form_entries["CLARO_USUARIO"].get().strip()
@@ -420,6 +374,21 @@ class BotGUI(tk.Tk):
         
         for key, entry in self.form_entries.items():
             self.env_config[key] = entry.get()
+        
+        # Aplicar valores ultra rápidos automáticos
+        self.env_config["DEBUG_MODE"] = "false"
+        self.env_config["PROXY_ENABLED"] = "false"
+        self.env_config["PROXY_HOST"] = ""
+        self.env_config["PROXY_PORT"] = ""
+        self.env_config["TIMING_SHORT_WAIT"] = "0.3"
+        self.env_config["TIMING_MEDIUM_WAIT"] = "1.0"
+        self.env_config["TIMING_LONG_WAIT"] = "2"
+        self.env_config["TIMING_PAGE_LOAD"] = "90"
+        self.env_config["TIMING_EXPLICIT_WAIT"] = "18"
+        self.env_config["TIMING_DOWNLOAD_TIMEOUT"] = "35"
+        self.env_config["TIMING_RATE_LIMIT"] = "0.5"
+        self.env_config["TIMING_RETRY_DELAY"] = "2"
+        
         self.save_env()
     
     def toggle_password(self):
@@ -433,62 +402,148 @@ class BotGUI(tk.Tk):
 
     def build_run_tab(self):
         frame = self.tab_run
+        frame.configure(style='TFrame')
         
-        title_label = ttk.Label(
-            frame,
-            text="🚀 Ejecutar Bot RPA v2.6 ULTRA RAPIDO",
-            font=("Arial", 14, "bold")
+        # Header azul
+        header_frame = tk.Frame(frame, bg='#2196F3', height=50)
+        header_frame.pack(fill=tk.X, pady=(0, 15))
+        header_frame.pack_propagate(False)
+        
+        title_label = tk.Label(
+            header_frame,
+            text="🤖 CoorpiBot",
+            font=("Segoe UI", 14, "bold"),
+            bg='#2196F3',
+            fg='white'
         )
-        title_label.pack(pady=20)
+        title_label.pack(expand=True)
         
-        instructions = ttk.Label(
-            frame,
-            text="Presiona el boton para iniciar el proceso de descarga automatica.\n"
-                 "El bot cerrara Chrome automaticamente si esta abierto.\n\n"
-                 "🚀 Version 2.6 ULTRA RAPIDA - SIN ESPERAS:\n"
-                 "⚡ Velocidad máxima automática - Sin configuración\n"
-                 "⚡ Login en ~3 segundos\n"
-                 "⚡ Búsquedas instantáneas\n"
-                 "✅ Sin delays artificiales\n"
-                 "✅ Detección inteligente sin esperas\n"
-                 "✅ Optimizado para 80+ Mbps\n"
-                 "🎯 ¡Solo ejecuta y listo!",
-            font=("Arial", 10),
-            justify=tk.CENTER
+        # Contenedor principal centrado
+        main_container = tk.Frame(frame, bg='#ffffff')
+        main_container.pack(expand=True, fill=tk.BOTH, padx=20, pady=10)
+        
+        # Sección de Créditos
+        credits_frame = tk.Frame(main_container, bg='#f8f8f8', relief=tk.RIDGE, borderwidth=1)
+        credits_frame.pack(pady=15, padx=40, fill=tk.X)
+        
+        copyright_title = tk.Label(
+            credits_frame,
+            text="© Copyright & Créditos",
+            font=("Segoe UI", 11, "bold"),
+            bg='#f8f8f8',
+            fg='#00bcd4',
+            pady=10
         )
-        instructions.pack(pady=10)
+        copyright_title.pack()
         
-        run_button = ttk.Button(
-            frame,
-            text="▶️ EJECUTAR BOT",
+        author_label = tk.Label(
+            credits_frame,
+            text="👤 Autor: ChampiP",
+            font=("Segoe UI", 9, "bold"),
+            bg='#f8f8f8',
+            fg='#333333',
+            pady=3
+        )
+        author_label.pack()
+        
+        github_label = tk.Label(
+            credits_frame,
+            text="🔗 GitHub: https://github.com/ChampiP",
+            font=("Segoe UI", 9),
+            bg='#f8f8f8',
+            fg='#1976D2',
+            cursor='hand2',
+            pady=3
+        )
+        github_label.pack()
+        
+        def open_github(e):
+            import webbrowser
+            webbrowser.open('https://github.com/ChampiP')
+        
+        github_label.bind('<Button-1>', open_github)
+        
+        whatsapp_label = tk.Label(
+            credits_frame,
+            text="📞 Contacto WhatsApp: +51 946 674 643",
+            font=("Segoe UI", 9, "bold"),
+            bg='#f8f8f8',
+            fg='#25D366',
+            pady=3
+        )
+        whatsapp_label.pack()
+        
+        version_label = tk.Label(
+            credits_frame,
+            text="🔰 CoorpiBot v2.6",
+            font=("Segoe UI", 8),
+            bg='#f8f8f8',
+            fg='#666666',
+            pady=5
+        )
+        version_label.pack()
+        
+        copyright_label = tk.Label(
+            credits_frame,
+            text="© 2025 ChampiP. Todos los derechos reservados.",
+            font=("Segoe UI", 8, "italic"),
+            bg='#f8f8f8',
+            fg='#999999',
+            pady=8
+        )
+        copyright_label.pack()
+        
+        # Botón de ejecución
+        button_frame = tk.Frame(main_container, bg='#ffffff')
+        button_frame.pack(pady=20)
+        
+        run_button = tk.Button(
+            button_frame,
+            text="▶  EJECUTAR BOT",
             command=self.run_bot,
-            width=30
+            font=("Segoe UI", 11, "bold"),
+            bg='#4CAF50',
+            fg='white',
+            activebackground='#45a049',
+            activeforeground='white',
+            relief=tk.FLAT,
+            padx=50,
+            pady=14,
+            cursor='hand2',
+            borderwidth=0
         )
-        run_button.pack(pady=20)
+        run_button.pack()
         
-        info_frame = ttk.LabelFrame(frame, text="Informacion", padding=10)
-        info_frame.pack(pady=10, padx=20, fill=tk.X)
+        def on_enter(e):
+            run_button['bg'] = '#45a049'
+        def on_leave(e):
+            run_button['bg'] = '#4CAF50'
+        
+        run_button.bind('<Enter>', on_enter)
+        run_button.bind('<Leave>', on_leave)
+        
+        # Información al final
+        info_frame = ttk.LabelFrame(main_container, text="Información", padding=8)
+        info_frame.pack(pady=10, padx=40, fill=tk.X)
         
         info_items = [
-            ("📥 Ubicacion de descargas:", f"{os.environ.get('USERPROFILE', '')}\\Downloads"),
-            ("🔧 Configuracion:", "config/terms.json y .env"),
-            ("⚙️ Modo:", "Descarga automatica sin intervencion"),
-            ("🔄 Version:", "2.6.0 - Ultra Rapido")
+            ("📥 Descargas:", f"C:\\Users\\MDY\\Downloads"),
+            ("🔧 Config:", "config/terms.json y .env")
         ]
         
         for label, value in info_items:
             item_frame = ttk.Frame(info_frame)
-            item_frame.pack(fill=tk.X, pady=3)
-            ttk.Label(item_frame, text=label, font=("Arial", 9, "bold")).pack(side=tk.LEFT)
-            ttk.Label(item_frame, text=value, font=("Arial", 9)).pack(side=tk.LEFT, padx=5)
+            item_frame.pack(fill=tk.X, pady=2)
+            ttk.Label(item_frame, text=label, font=("Segoe UI", 8, "bold")).pack(side=tk.LEFT)
+            ttk.Label(item_frame, text=value, font=("Segoe UI", 8)).pack(side=tk.LEFT, padx=5)
         
         warning_label = ttk.Label(
-            frame,
-            text="⚠️ Asegurate de haber configurado correctamente las credenciales en la pestana 'Ajustes'",
-            font=("Arial", 8, "italic"),
+            main_container,
+            text="⚠️ Configura las credenciales en 'Ajustes'",
+            font=("Segoe UI", 8, "italic"),
             foreground="orange"
         )
-        warning_label.pack(pady=10)
+        warning_label.pack(pady=5)
 
     def run_bot(self):
         if not self.env_config.get("CLARO_USUARIO") or not self.env_config.get("CLARO_CLAVE"):
@@ -518,26 +573,182 @@ class BotGUI(tk.Tk):
                     creationflags=subprocess.CREATE_NO_WINDOW if os.name == 'nt' else 0
                 )
                 
-                index_path = os.path.join(os.path.dirname(__file__), "index.py")
-                
-                if os.name == 'nt':
-                    subprocess.Popen(
-                        ["cmd", "/c", "start", "cmd", "/k", "python", index_path],
-                        creationflags=subprocess.CREATE_NEW_CONSOLE
+                # Si está ejecutándose como .exe, importar y ejecutar directamente
+                if getattr(sys, 'frozen', False):
+                    # Ejecutar en un hilo separado para no bloquear la GUI
+                    def run_bot_module():
+                        try:
+                            import index
+                            index.main()  # Llamar explícitamente a la función main
+                        except Exception as e:
+                            messagebox.showerror("Error", f"Error al ejecutar el bot: {e}")
+                    
+                    threading.Thread(target=run_bot_module, daemon=False).start()
+                    
+                    messagebox.showinfo(
+                        "Bot Iniciado",
+                        "El bot se esta ejecutando en segundo plano.\n"
+                        "Revisa la carpeta Downloads para ver los archivos descargados."
                     )
                 else:
-                    subprocess.Popen(["python", index_path])
-                
-                messagebox.showinfo(
-                    "Bot Iniciado",
-                    "El bot se esta ejecutando en una ventana de terminal.\n"
-                    "Puedes cerrar esta ventana sin afectar el proceso."
-                )
+                    # Modo desarrollo: ejecutar index.py con Python
+                    index_path = os.path.join(os.path.dirname(__file__), "index.py")
+                    
+                    if os.name == 'nt':
+                        subprocess.Popen(
+                            ["cmd", "/c", "start", "cmd", "/k", "python", index_path],
+                            creationflags=subprocess.CREATE_NEW_CONSOLE
+                        )
+                    else:
+                        subprocess.Popen(["python", index_path])
+                    
+                    messagebox.showinfo(
+                        "Bot Iniciado",
+                        "El bot se esta ejecutando en una ventana de terminal.\n"
+                        "Puedes cerrar esta ventana sin afectar el proceso."
+                    )
                 
             except Exception as e:
                 messagebox.showerror("Error", f"No se pudo ejecutar el bot: {e}")
         
         threading.Thread(target=execute_bot, daemon=True).start()
+    
+    def build_instructions_tab(self):
+        frame = self.tab_instructions
+        frame.configure(style='TFrame')
+        
+        # Contenedor con scroll
+        canvas = tk.Canvas(frame, bg='#ffffff', highlightthickness=0)
+        scrollbar = ttk.Scrollbar(frame, orient="vertical", command=canvas.yview)
+        scrollable_frame = ttk.Frame(canvas)
+        
+        scrollable_frame.bind(
+            "<Configure>",
+            lambda e: canvas.configure(scrollregion=canvas.bbox("all"))
+        )
+        
+        canvas.create_window((0, 0), window=scrollable_frame, anchor="nw")
+        canvas.configure(yscrollcommand=scrollbar.set)
+        
+        # Header
+        header = tk.Label(
+            scrollable_frame,
+            text="📖 Instrucciones de Uso",
+            font=("Segoe UI", 12, "bold"),
+            bg='#ffffff',
+            fg='#2196F3',
+            pady=10
+        )
+        header.pack(pady=(10, 5))
+        
+        # Instrucciones
+        instructions_text = """1️⃣ Configurar Credenciales:
+   Ve a la pestaña "Ajustes" e ingresa tu usuario y contraseña.
+
+2️⃣ Gestionar Términos:
+   En "Términos" puedes agregar, editar o eliminar términos de búsqueda.
+
+3️⃣ Ejecutar el Bot:
+   En "Ejecutar", presiona el botón verde para iniciar.
+   El bot buscará y descargará automáticamente los archivos.
+
+4️⃣ Revisar Descargas:
+   Los archivos se guardan en tu carpeta de Descargas.
+
+⚠️ Importante:
+   • Chrome se cerrará automáticamente al ejecutar el bot
+   • Asegúrate de tener una conexión estable a Internet
+   • No cierres el bot mientras está en ejecución"""
+        
+        instructions_label = tk.Label(
+            scrollable_frame,
+            text=instructions_text,
+            font=("Segoe UI", 9),
+            bg='#ffffff',
+            fg='#333333',
+            justify=tk.LEFT,
+            padx=20,
+            pady=10
+        )
+        instructions_label.pack(pady=5)
+        
+        # Separador
+        separator = ttk.Separator(scrollable_frame, orient='horizontal')
+        separator.pack(fill=tk.X, padx=20, pady=15)
+        
+        # Créditos y Copyright
+        credits_frame = tk.Frame(scrollable_frame, bg='#f8f8f8', relief=tk.RIDGE, borderwidth=1)
+        credits_frame.pack(pady=10, padx=20, fill=tk.X)
+        
+        copyright_title = tk.Label(
+            credits_frame,
+            text="© Copyright & Créditos",
+            font=("Segoe UI", 11, "bold"),
+            bg='#f8f8f8',
+            fg='#2196F3',
+            pady=8
+        )
+        copyright_title.pack()
+        
+        author_label = tk.Label(
+            credits_frame,
+            text="👨‍💻 Autor: ChampiP",
+            font=("Segoe UI", 9, "bold"),
+            bg='#f8f8f8',
+            fg='#333333',
+            pady=3
+        )
+        author_label.pack()
+        
+        github_label = tk.Label(
+            credits_frame,
+            text="🔗 GitHub: https://github.com/ChampiP",
+            font=("Segoe UI", 9),
+            bg='#f8f8f8',
+            fg='#1976D2',
+            cursor='hand2',
+            pady=3
+        )
+        github_label.pack()
+        
+        def open_github(e):
+            import webbrowser
+            webbrowser.open('https://github.com/ChampiP')
+        
+        github_label.bind('<Button-1>', open_github)
+        
+        whatsapp_label = tk.Label(
+            credits_frame,
+            text="📞 Contacto WhatsApp: +51 946 674 643",
+            font=("Segoe UI", 9, "bold"),
+            bg='#f8f8f8',
+            fg='#25D366',
+            pady=3
+        )
+        whatsapp_label.pack()
+        
+        version_label = tk.Label(
+            credits_frame,
+            text="🔖 CoorpiBot v2.6",
+            font=("Segoe UI", 8),
+            bg='#f8f8f8',
+            fg='#666666',
+            pady=8
+        )
+        version_label.pack()
+        
+        copyright_label = tk.Label(
+            credits_frame,
+            text="© 2025 ChampiP. Todos los derechos reservados.",
+            font=("Segoe UI", 8, "italic"),
+            bg='#f8f8f8',
+            fg='#999999',
+            pady=5
+        )
+        copyright_label.pack()
+        
+        canvas.pack(side="left", fill="both", expand=True)
+        scrollbar.pack(side="right", fill="y")
 
 
 if __name__ == "__main__":

@@ -3,6 +3,7 @@ import os
 import subprocess
 import json
 import requests
+import sys
 from datetime import datetime
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -21,6 +22,12 @@ from dotenv import load_dotenv
 
 VERSION = "2.6.0"
 GITHUB_REPO = "ChampiP/bot-rpa"
+
+# Detectar si se ejecuta como .exe (PyInstaller)
+if getattr(sys, 'frozen', False):
+    BASE_DIR = os.path.dirname(os.path.abspath(sys.argv[0]))
+else:
+    BASE_DIR = os.path.dirname(__file__)
 
 
 class UpdateChecker:
@@ -84,7 +91,14 @@ class ConfigLoader:
             exit(1)
     
     def _load_search_terms(self):
-        config_path = os.path.join(os.path.dirname(__file__), 'config', 'terms.json')
+        # Buscar terms.json en la carpeta del usuario si es .exe
+        if getattr(sys, 'frozen', False):
+            config_dir = os.path.join(os.path.expanduser('~'), '.botrpa', 'config')
+        else:
+            config_dir = os.path.join(BASE_DIR, 'config')
+        
+        config_path = os.path.join(config_dir, 'terms.json')
+        
         try:
             with open(config_path, 'r', encoding='utf-8') as f:
                 config = json.load(f)
@@ -111,7 +125,7 @@ class DirectoryManager:
         return os.path.abspath(default_downloads)
     
     def _get_final_directory(self):
-        return os.path.join(os.path.dirname(__file__), 'Diagramas_Claro_Final')
+        return os.path.join(BASE_DIR, 'Diagramas_Claro_Final')
     
     def _create_directories(self):
         for directory in [self.download_dir, self.final_dir]:
